@@ -40,7 +40,7 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz, $rm
   try{
     $db = new DBConnection();
     $db->getConnection();
-    $sql = "insert into `jqcalendar` (`subject`, `starttime`, `endtime`, `isalldayevent`, `description`, `location`, `color`, `CUST_NAME`, `CUST_TELE`, `CUST_CNUM`, `RESV_YYMD`, `RSST_HHMI`, `RSED_HHMI`, `RMDY_DOCT`, `REGI_DATE`, `RESV_USER`, `RESV_IPAD`) values ('"
+    $sql = "insert into `jqcalendar` (`subject`, `starttime`, `endtime`, `isalldayevent`, `description`, `location`, `color`, `CUST_NAME`, `CUST_TELE`, `CUST_CNUM`, `CUST_GUBN`, `RESV_YYMD`, `RSST_HHMI`, `RSED_HHMI`, `RMDY_DOCT`, `REGI_DATE`, `RESV_USER`, `RESV_IPAD`) values ('"
       .mysql_real_escape_string($sub)."', '"
       .php2MySqlTime(js2PhpTime($st))."', '"
       .php2MySqlTime(js2PhpTime($et))."', '"
@@ -51,6 +51,7 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz, $rm
       .mysql_real_escape_string($cust_name)."', '"
       .mysql_real_escape_string($cust_tele)."', '"
       .mysql_real_escape_string($cust_iden)."', '"
+      .mysql_real_escape_string($cust_gubn)."', '"
       .php2MySqlTime(js2PhpTime($st))."', '"
       .substr(php2MySqlTime(js2PhpTime($st)),11)."', '"
       .substr(php2MySqlTime(js2PhpTime($et)),11)."', '"
@@ -170,7 +171,7 @@ function updateCalendar($id, $st, $et){
   return $ret;
 }
 //세부 내용 업데이트
-function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, $tz, $rmdy_doct, $cust_name, $cust_tele, $cust_iden){
+function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, $tz, $rmdy_doct, $cust_name, $cust_tele, $cust_iden, $cust_gubn){
   $ret = array();
   try{
     $db = new DBConnection();
@@ -186,6 +187,7 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
       . " `CUST_NAME`='" . mysql_real_escape_string($cust_name) . "', "
       . " `CUST_TELE`='" . mysql_real_escape_string($cust_tele) . "', "
       . " `CUST_CNUM`='" . mysql_real_escape_string($cust_iden) . "', "
+      . " `CUST_GUBN`='" . mysql_real_escape_string($cust_gubn) . "', "
       . " `RESV_YYMD`='" . php2MySqlTime(js2PhpTime($st)) . "', "
       . " `RSST_HHMI`='" . substr(php2MySqlTime(js2PhpTime($st)),11) . "', "
       . " `RSED_HHMI`='" . substr(php2MySqlTime(js2PhpTime($et)),11) . "', "
@@ -260,11 +262,11 @@ switch ($method) {
         if(isset($_GET["id"])){
             $ret = updateDetailedCalendar($_GET["id"], $st, $et, 
                 $_POST["Subject"], isset($_POST["IsAllDayEvent"])?1:0, $_POST["Description"], 
-                $_POST["Location"], $_POST["colorvalue"], $_POST["timezone"], $_POST["RMDY_DOCT"], $_POST["CUST_NAME"], $_POST["CUST_TELE"], $_POST["CUST_IDEN"]);
+                $_POST["Location"], $_POST["colorvalue"], $_POST["timezone"], $_POST["RMDY_DOCT"], $_POST["CUST_NAME"], $_POST["CUST_TELE"], $_POST["CUST_IDEN"], $_POST["CUST_GUBN"]);
         }else{
             $ret = addDetailedCalendar($st, $et,                    
                 $_POST["Subject"], isset($_POST["IsAllDayEvent"])?1:0, $_POST["Description"], 
-                $_POST["Location"], $_POST["colorvalue"], $_POST["timezone"], $_POST["RMDY_DOCT"], $_POST["CUST_NAME"], $_POST["CUST_TELE"], $_POST["CUST_IDEN"]);
+                $_POST["Location"], $_POST["colorvalue"], $_POST["timezone"], $_POST["RMDY_DOCT"], $_POST["CUST_NAME"], $_POST["CUST_TELE"], $_POST["CUST_IDEN"], $_POST["CUST_GUBN"]);
         }        
         break; 
 
