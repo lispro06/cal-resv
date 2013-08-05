@@ -1,11 +1,11 @@
 <?php
 include_once("php/dbconfig.php");
 include_once("php/functions.php");
-function getCalendarByRange($id){
-  try{
+// db 커넥션을 무조건 한다. 2013-08-05
     $db = new DBConnection();
     $db->getConnection();
-    
+function getCalendarByRange($id){
+  try{    
     $sql = "select * from `jqcalendar` where `id` = " . $id;
     $handle = mysql_query($sql);
     //echo $sql;
@@ -17,6 +17,7 @@ function getCalendarByRange($id){
 if($_GET["id"]){
 	$event = getCalendarByRange($_GET["id"]);
 }else{//2013-08-05 세부 일정 클릭 시 내용 수신
+
 	$title_G = $_GET["title"];
 	$sarr_G = explode(" ", $_GET["start"]);
 	$earr_G = explode(" ", $_GET["end"]);
@@ -182,6 +183,16 @@ if($_GET["id"]){
                 error.appendTo(form).css(newpos);
             }
         });
+		function cust_srch(){
+			var cust_name = document.getElementById("keyword");
+			var ln=cust_name.value.length;
+			var url="./cust_srch.php?cust_name="+cust_name.value;
+			if(parseInt(ln)>1){
+				window.open(url,'','width=200, height=200, toolbar=no, menubar=no, location=no, directories=0, status=0,scrollbar=0,resize=0');
+			}else{
+				alert("고객 이름을 2자 이상 입력해 주세요.");
+			}
+		}
     </script>      
     <style type="text/css">     
     .calpick     {        
@@ -215,8 +226,11 @@ if($_GET["id"]){
       <div style="clear: both">         
       </div>        
       <div class="infocontainer">            
-        <form action="php/datafeed.php?method=adddetails<?php echo isset($event)?"&id=".$event->Id:""; ?>" class="fform" id="fmEdit" method="post">                 
-          <label>                    
+        <form action="php/datafeed.php?method=adddetails<?php echo isset($event)?"&id=".$event->Id:""; ?>" class="fform" id="fmEdit" method="post">
+		<span><b>*고객구분 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" onchange="srch_on();" checked />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" onchange="srch_on();" />구환&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" disabled size="10" name="iden" id="iden"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
+		</span><br />
+		  <span><b>*고객성명: <input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $event->CUST_NAME;?>"></input>&nbsp;&nbsp;&nbsp; *연락처: <input class="required safe" name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $event->CUST_TELE;?>"></input>&nbsp;&nbsp;&nbsp; 주민번호: <input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $event->CUST_CNUM;?>"></input></b></span>
+		  <label>
             <span>                        *Subject:
             </span>                    
             <div id="calendarcolor">
@@ -246,14 +260,8 @@ if($_GET["id"]){
             <span>                        Location:
             </span>                    
             <input MaxLength="200" id="Location" name="Location" style="width:95%;" type="text" value="<?php echo isset($event)?$event->Location:""; ?>" />                 
-          </label>                 
-          <label>                    
+          </label>                   
 <?php
-if(!$id){
-
-    $db = new DBConnection();
-    $db->getConnection();
-    }
     $rmdy_sql="SELECT * FROM  `toto_doctor`";	
     $rmdy_hd = mysql_query($rmdy_sql);
 	
@@ -273,7 +281,8 @@ if(!$id){
 		   }
 ?>
     	    </select> 
-            </span>   
+            </span>
+			<label>
             <span>                        Remark:
             </span>                    
 <textarea cols="20" id="Description" name="Description" rows="2" style="width:95%; height:70px">
@@ -285,4 +294,21 @@ if(!$id){
       </div>         
     </div>
   </body>
+  <script>
+  
+			var kw = document.getElementById("keyword");
+			var sb = document.getElementById("sc_bt");
+			var cg = 1;
+		function srch_on(){
+			if(cg=="1"){
+				kw.removeAttribute('disabled');
+				sb.removeAttribute('disabled');
+				cg=2;
+			}else{
+				kw.setAttribute('disabled',true);
+				sb.setAttribute('disabled',true);
+				cg=1;
+			}
+		}
+	</script>
 </html>
