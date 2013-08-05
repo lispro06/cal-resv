@@ -16,8 +16,9 @@ function getCalendarByRange($id){
 }
 if($_GET["id"]){
 	$event = getCalendarByRange($_GET["id"]);
+	$cb[$event->CUST_GUBN]="checked";//고객 구분 배열 2013-08-05
 }else{//2013-08-05 세부 일정 클릭 시 내용 수신
-
+	$cb["N"]="checked";//새 일정일 경우 고객은 신환으로 설정
 	$title_G = $_GET["title"];
 	$sarr_G = explode(" ", $_GET["start"]);
 	$earr_G = explode(" ", $_GET["end"]);
@@ -27,7 +28,7 @@ if($_GET["id"]){
 <html xmlns="http://www.w3.org/1999/xhtml" >
   <head>    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">    
-    <title>Calendar Details</title>    
+    <title>세부 내용</title>    
     <link href="css/main.css" rel="stylesheet" type="text/css" />       
     <link href="css/dp.css" rel="stylesheet" />    
     <link href="css/dropdown.css" rel="stylesheet" />    
@@ -116,7 +117,7 @@ if($_GET["id"]){
             $("#Savebtn").click(function() { $("#fmEdit").submit(); });
             $("#Closebtn").click(function() { CloseModelWindow(); });
             $("#Deletebtn").click(function() {
-                 if (confirm("Are you sure to remove this event")) {  
+                 if (confirm("삭제하시겠습니까?")) {  
                     var param = [{ "name": "calendarId", value: 8}];                
                     $.post(DATA_FEED_URL + "?method=remove",
                         param,
@@ -126,7 +127,7 @@ if($_GET["id"]){
                                     CloseModelWindow(null,true);                            
                                 }
                                 else {
-                                    alert("Error occurs.\r\n" + data.Msg);
+                                    alert("오류 발생.\r\n" + data.Msg);
                                 }
                         }
                     ,"json");
@@ -209,17 +210,17 @@ if($_GET["id"]){
     <div>      
       <div class="toolBotton">           
         <a id="Savebtn" class="imgbtn" href="javascript:void(0);">                
-          <span class="Save"  title="Save the calendar">Save(<u>S</u>)
+          <span class="Save"  title="예약 입력">저장(<u>S</u>)
           </span>          
         </a>                           
         <?php if(isset($event)){ ?>
         <a id="Deletebtn" class="imgbtn" href="javascript:void(0);">                    
-          <span class="Delete" title="Cancel the calendar">Delete(<u>D</u>)
+          <span class="Delete" title="예약 취소">삭제(<u>D</u>)
           </span>                
         </a>             
         <?php } ?>            
         <a id="Closebtn" class="imgbtn" href="javascript:void(0);">                
-          <span class="Close" title="Close the window" >Close
+          <span class="Close" title="취소하고 닫기" >닫기
           </span></a>            
         </a>        
       </div>                  
@@ -227,11 +228,11 @@ if($_GET["id"]){
       </div>        
       <div class="infocontainer">            
         <form action="php/datafeed.php?method=adddetails<?php echo isset($event)?"&id=".$event->Id:""; ?>" class="fform" id="fmEdit" method="post">
-		<span><b>*고객구분 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" onchange="srch_on();" checked />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" onchange="srch_on();" />구환&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" disabled size="10" name="iden" id="iden"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
+		<span><b>*고객구분 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" onchange="srch_on();" <?php echo $cb["N"];?> />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" <?php echo $cb["O"];?> onchange="srch_on();" />구환&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" disabled size="10" name="iden" id="iden"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
 		</span><br />
 		  <span><b>*고객성명: <input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $event->CUST_NAME;?>"></input>&nbsp;&nbsp;&nbsp; *연락처: <input class="required safe" name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $event->CUST_TELE;?>"></input>&nbsp;&nbsp;&nbsp; 주민번호: <input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $event->CUST_CNUM;?>"></input></b></span>
 		  <label>
-            <span>                        *Subject:
+            <span>                        *제목:
             </span>                    
             <div id="calendarcolor">
             </div>
@@ -239,7 +240,7 @@ if($_GET["id"]){
             <input id="colorvalue" name="colorvalue" type="hidden" value="<?php echo isset($event)?$event->Color:"" ?>" />                
           </label>                 
           <label>                    
-            <span>*Time:
+            <span>*일시:
             </span>                    
             <div>  
               <?php if(isset($event)){
@@ -252,12 +253,12 @@ if($_GET["id"]){
               <input MaxLength="10" class="required date" id="etpartdate" name="etpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$earr[0]:""; ?><?php echo $earr_G[0]; ?>" />                       
               <input MaxLength="50" class="required time" id="etparttime" name="etparttime" style="width:40px;" type="text" value="<?php echo isset($event)?$earr[1]:""; ?><?php echo $earr_G[1]; ?>" />                                            
               <label class="checkp"> 
-                <input id="IsAllDayEvent" name="IsAllDayEvent" type="checkbox" value="1" <?php if(isset($event)&&$event->IsAllDayEvent!=0) {echo "checked";} ?>/>          All Day Event                      
+                <input id="IsAllDayEvent" name="IsAllDayEvent" type="checkbox" value="1" <?php if(isset($event)&&$event->IsAllDayEvent!=0) {echo "checked";} ?>/>          하루 종일                      
               </label>                    
             </div>                
           </label>                 
           <label>                    
-            <span>                        Location:
+            <span>                        장소:
             </span>                    
             <input MaxLength="200" id="Location" name="Location" style="width:95%;" type="text" value="<?php echo isset($event)?$event->Location:""; ?>" />                 
           </label>                   
@@ -298,16 +299,16 @@ if($_GET["id"]){
   
 			var kw = document.getElementById("keyword");
 			var sb = document.getElementById("sc_bt");
-			var cg = 1;
+			var cg = "<?php echo $event->CUST_GUBN;?>";//구환 신환 플래그로 검색창 [비]활성화
 		function srch_on(){
-			if(cg=="1"){
+			if(cg=="N"){
 				kw.removeAttribute('disabled');
 				sb.removeAttribute('disabled');
-				cg=2;
+				cg="O";
 			}else{
 				kw.setAttribute('disabled',true);
 				sb.setAttribute('disabled',true);
-				cg=1;
+				cg="N";
 			}
 		}
 	</script>
