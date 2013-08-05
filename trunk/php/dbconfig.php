@@ -2,10 +2,10 @@
 class DBConnection{
 	function getConnection(){
 	  //change to your database server/user name/password
-		mysql_connect("localhost","toto","totodaud") or
+		mysql_connect("localhost","id","passwd") or
          die("Could not connect: " . mysql_error());
     //change to your database name
-		mysql_select_db("toto") or 
+		mysql_select_db("dbname") or 
 		     die("Could not select database: " . mysql_error());
 	}
 }
