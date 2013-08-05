@@ -1,0 +1,14 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+한글화 관련 js 파일.
+
+
+= Details =
+
+src/Plugins/wdCalendar_lang_US.js
+  * 달력 레이아웃의 표현
+
+src/Plugins/datepicker_lang_US.js
+  * 세부 내용 입력 창의 날짜 선택 UI
