@@ -2,7 +2,7 @@
 header("Content-Type: text/html; charset=UTF-8");
 //이중 로그인과 db정보 연동을 위한 파일 로딩2013-08-07
    	define('__ZBXE__', true);
-	include("./files/config/db.config.php");
+	include("../files/config/db.config.php");
 	$dbname=$db_info->master_db['db_userid'];
 	$dbpass=$db_info->master_db['db_password'];
 class DBConnection{
@@ -15,7 +15,7 @@ class DBConnection{
 		     die("Could not select database: " . mysql_error());
 	}
 }
- require_once('./config/config.inc.php');
+ require_once('../config/config.inc.php');
  $oContext = &Context::getInstance();
  $oContext->init();
     
@@ -32,7 +32,7 @@ if(!$_SESSION['sunap']){//권한이 없으면 종료
 if($aclRow[8]!="Y"){//권한이 없으면 종료
 	exit();
 }
-include_once("php/functions.php");
+  include_once("../cal/php/functions.php");
 // db 커넥션을 무조건 한다. 2013-08-05
     $db = new DBConnection();
     $db->getConnection($dbname,$dbpass);
