@@ -32,7 +32,7 @@ if(!$_SESSION['sunap']){//권한이 없으면 종료
 if($aclRow[8]!="Y"){//권한이 없으면 종료
 	exit();
 }
-  include_once("../cal/php/functions.php");
+include_once("./functions.php");
 // db 커넥션을 무조건 한다. 2013-08-05
     $db = new DBConnection();
     $db->getConnection($dbname,$dbpass);
@@ -111,7 +111,7 @@ if($_GET["id"]){
         }
         $(document).ready(function() {
             //debugger;
-            var DATA_FEED_URL = "php/datafeed.php";
+            var DATA_FEED_URL = "./cal/datafeed.php";
             var arrT = [];
             var tt = "{0}:{1}";
             for (var i = 0; i < 24; i++) {//combo box로 된 시간 선택 상자
@@ -261,16 +261,16 @@ if($_GET["id"]){
       <div style="clear: both">         
       </div>        
       <div class="infocontainer">            
-        <form action="php/datafeed.php?method=adddetails<?php echo isset($event)?"&id=".$event->Id:""; ?>" class="fform" id="fmEdit" method="post">
+        <form action="./datafeed.php?method=adddetails<?php echo isset($event)?"&id=".$event->Id:""; ?>&re=<?php echo $_SESSION['sunap'];?>" class="fform" id="fmEdit" method="post">
 		<div style="border:1px solid #333333;padding:2px;">
-		<span><b>&nbsp;<u>고객구분</u> <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" onchange="srch_on();" <?php echo $cb["N"];?> />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" <?php echo $cb["O"];?> onchange="srch_on();" />구환&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" disabled size="10" name="iden" id="iden"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
+		<span><b>&nbsp;<u>고객구분</u> <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" onchange="srch_on();" <?php echo $cb["N"];?> />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" <?php echo $cb["O"];?> onchange="srch_on();" />구환&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $event->CUST_CNUM;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
 		</span><br />
-		  <span><b>&nbsp;<u>고객성명</u>&nbsp;&nbsp;<input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $event->CUST_NAME;?>"></input>&nbsp;&nbsp;&nbsp; <u>연&nbsp;락&nbsp;처</u> <input class="required safe" name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $event->CUST_TELE;?>"></input>&nbsp;&nbsp; 주&nbsp;민&nbsp;번&nbsp;호 <input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $event->CUST_CNUM;?>" disabled></input></b></span><br />
+		  <span><b>&nbsp;<u>고객성명</u>&nbsp;&nbsp;<input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $event->CUST_NAME;?>"></input>&nbsp;&nbsp;&nbsp; <u>연&nbsp;락&nbsp;처</u> <input class="required safe" name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $event->CUST_TELE;?>"></input>&nbsp;&nbsp; 주&nbsp;민&nbsp;번&nbsp;호 <input name="CUST_IDEN" id="CUST_IDEN" size="15" value="" disabled></input></b></span><br />
 		  <table><tr><td>고객메모<br />(특이사항)</td><td><textarea id="CUST_MEMO" name="CUST_MEMO" disabled style="width:480px;;height:30px;"></textarea></td></tr></table>
 		  </div>
 		  <hr style="margin: 5px 0 0 0;border-color:white" >
 		  <label style="display:none;">
-            <span>*제목:<input MaxLength="200" class="required safe" id="Subject" name="Subject" style="width:70%;" type="text" value="<?php echo isset($event)?$event->Subject:"" ?><?php echo $title_G;?>" />(달력에 보일 내용)
+            <span>*제목:<input MaxLength="200" id="Subject" name="Subject" style="width:70%;" type="text" value="<?php echo isset($event)?$event->Subject:"" ?><?php echo $title_G;?>" />(달력에 보일 내용)
             </span></label>
             <div id="calendarcolor" style="display:none;">
             </div>                    
@@ -395,7 +395,7 @@ if($event->TELE_FLAG){
 		</td>
 		</tr>
 		</table>
-            <input id="colorvalue" name="colorvalue" type="hidden" value="<?php echo isset($event)?$event->Color:"" ?>" />                
+            <input id="colorvalue" name="colorvalue" type="hidden" value="<?php echo isset($event)?$event->Color:"" ?>" />
             </div>                
           </label>                 
           <label>
