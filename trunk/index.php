@@ -40,6 +40,7 @@ if(!$_SESSION['sunap']){
 	$aclRow = mysql_fetch_row($aclRes);
 }
 if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
+	$_SESSION['sunap']="";//세션을 초기화 해준다.
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -123,14 +124,14 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
 
     <script src="src/Plugins/jquery.alert.js" type="text/javascript"></script>    
     <script src="src/Plugins/jquery.ifrmdailog.js" defer="defer" type="text/javascript"></script>
-    <script src="src/Plugins/wdCalendar_lang_US.js" type="text/javascript"></script>    
+    <script src="src/Plugins/wdCalendar_lang_KO.js" type="text/javascript"></script>    
     <script src="src/Plugins/jquery.calendar.js" type="text/javascript"></script>   
     
     <script type="text/javascript">
         $(document).ready(function() {     
            var view="week";          
-           
-            var DATA_FEED_URL = "php/datafeed.php";
+           var re="<?php echo $_SESSION['sunap'];?>";
+            var DATA_FEED_URL = "./cal/datafeed.php";
             var op = {
                 view: view,
                 theme:3,
@@ -144,8 +145,8 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                 onRequestDataError: cal_onerror, 
                 autoload:true,
                 url: DATA_FEED_URL + "?method=list",  
-                quickAddUrl: DATA_FEED_URL + "?method=add", 
-                quickUpdateUrl: DATA_FEED_URL + "?method=update",
+                quickAddUrl: DATA_FEED_URL + "?method=add"+"&re="+re, 
+                quickUpdateUrl: DATA_FEED_URL + "?method=update"+"&re="+re,
                 quickDeleteUrl: DATA_FEED_URL + "?method=remove"        
             };
             var $dv = $("#calhead");
@@ -399,4 +400,3 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
     
 </body>
 </html>
-
