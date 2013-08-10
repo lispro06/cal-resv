@@ -243,7 +243,13 @@ if($_GET["id"]){
 	          $rc_child[$pos]["kora"][]=$row_rc[1];
 	}
 ?>
-		function rmdy_child(obj)
+		function rc_setting(obj){
+			 rk = document.getElementById("RMDY_KORA");
+			 rc = document.getElementById("RMDY_CODE");
+			 rc.value = obj.value;
+			 rk.value = obj.options[obj.selectedIndex].text;
+		}
+		function rc_child(obj)
 		{
 		selectBox=document.getElementById("chi");
 		if (null == selectBox || null == selectBox.options){
@@ -349,7 +355,12 @@ if($_GET["id"]){
 			<tr>
 			<td style="width:80px;">&nbsp;<u>진&nbsp;&nbsp;&nbsp;료&nbsp;&nbsp;&nbsp;명</u></td>
 			<td>
-				<input type="text" id="RMDY_CODE" name="RMDY_CODE" style="width:120px;" value="<?php echo $event->RMDY_CODE;?>" class="required safe"></input>
+			<?php
+			$rk_sql = "SELECT `RMDY_ENGL` FROM `toto_RemedyCode` WHERE `RMDY_CODE` = '".$event->RMDY_CODE."'";
+			$rk_hd=mysql_query($rk_sql);
+			$rk_row=mysql_fetch_array($rk_hd);
+			?>
+				<input type="text" id="RMDY_KORA" name="RMDY_KORA" disabled style="width:120px;" value="<?php echo $rk_row[0];?>" class="required safe"></input>
 			</td>
 			</tr>
 			<tr>
@@ -400,8 +411,8 @@ if($_GET["id"]){
 			</td>
 			</tr></table>
 		</td>
-		<td style="width:150px;">진료명&nbsp;<input type="text" style="width:60px;" disabled></input>
-				<select style="width:50px;" id="par" name="par" onchange="rmdy_child(this)">
+		<td style="width:150px;">진료명&nbsp;<input type="text" style="width:60px;" id="RMDY_CODE" name="RMDY_CODE" value="<?php echo $event->RMDY_CODE;?>"></input>
+				<select style="width:50px;" id="par" name="par" onchange="rc_child(this)">
 		<?php
 			$parent=count($rc_parent);
 			for($i=0;$i<$parent;$i++){
@@ -409,7 +420,7 @@ if($_GET["id"]){
 			}
 		?>
 			        </select><hr style="margin: 5px 0 0 0;">
-				<select style="width:160px;overflow: scroll;" size="9"" name="chi" id="chi">   
+				<select style="width:160px;overflow: scroll;" size="9"" name="chi" id="chi" onchange="rc_setting(this);">   
 		<?php
 			$child=count($rc_child[1]["code"]);
 			for($i=1;$i<$child;$i++){
