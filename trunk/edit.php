@@ -228,7 +228,51 @@ if($_GET["id"]){
 				alert("고객 이름을 2자 이상 입력해 주세요.");
 			}
 		}
-    </script>      
+		
+<?php // 진료명 세팅하기
+	$rc_sql = "SELECT `RMDY_CODE` FROM `toto_RemedyCode` WHERE `RMDY_CODE` LIKE '%00' AND `USE__FLAG`=\"1\"";
+	$rc_hd = mysql_query($rc_sql);
+	while($row_rc = mysql_fetch_array($rc_hd)){
+	          $rc_parent[]=$row_rc[0];
+	}
+	$rc_sql = "SELECT `RMDY_CODE`, `RMDY_ENGL` FROM `toto_RemedyCode` WHERE `RMDY_CODE` NOT LIKE '%00' AND `USE__FLAG`=\"1\"";
+	$rc_hd = mysql_query($rc_sql);
+	while($row_rc = mysql_fetch_array($rc_hd)){
+	          $pos=intval($row_rc[0]/100);
+	          $rc_child[$pos]["code"][]=$row_rc[0];
+	          $rc_child[$pos]["kora"][]=$row_rc[1];
+	}
+?>
+		function rmdy_child(obj)
+		{
+		selectBox=document.getElementById("chi");
+		if (null == selectBox || null == selectBox.options){
+		   return;
+		}
+		
+		var length = selectBox.options.length;
+		    for (var index=0;index<length ;index++){
+		    	selectBox.options.remove(0);
+		    }
+		var ov=obj.value;
+		switch(ov){
+		<?php
+			for($i=0;$i<count($rc_parent);$i++){
+				echo " case \"".$rc_parent[$i]."\" :\n";
+				for($j=0;$j<count($rc_child[$i+1]["code"]);$j++){
+					echo "var o".$j." = new Option(\"".$rc_child[$i+1]["kora"][$j]."\",\"".$rc_child[$i+1]["code"][$j]."\", true);\n";		
+					echo "selectBox.options[".$j."] = o".$j.";\n";
+				}
+				echo "		break;\n";
+			}
+		?>
+			default :
+				var option1 = new Option(ov, "1st_option", true);
+                     		selectBox.options[0] = option1;
+			}
+		} 
+
+</script>      
     <style type="text/css">     
     .calpick     {        
         width:16px;   
@@ -320,6 +364,9 @@ if($_GET["id"]){
 				<select name="RMDY_DOCT" id="RMDY_DOCT" style="width:120px;">
 	    	    <option value="">원장 선택</option>
 			<?php
+			
+			$rmdy_sql="SELECT * FROM  `toto_doctor`";	
+    			$rmdy_hd = mysql_query($rmdy_sql);
 			//$row = mysql_fetch_array($rmdy_hd);//원장선택 추가 2013-8-3
 			//$tt=mysql_affected_rows();
 				while($row = mysql_fetch_array($rmdy_hd)){
@@ -354,13 +401,24 @@ if($_GET["id"]){
 			</tr></table>
 		</td>
 		<td style="width:150px;">진료명&nbsp;<input type="text" style="width:60px;" disabled></input>
-				<select style="width:50px;">
-	    	    <option value=""></option></select><hr style="margin: 5px 0 0 0;">
-				<select style="width:160px;" size="9">
-	    	    <option value=""></option></select>
+				<select style="width:50px;" id="par" name="par" onchange="rmdy_child(this)">
+		<?php
+			$parent=count($rc_parent);
+			for($i=0;$i<$parent;$i++){
+			echo "<option value='".$rc_parent[$i]."'>".$rc_parent[$i]."</option>";
+			}
+		?>
+			        </select><hr style="margin: 5px 0 0 0;">
+				<select style="width:160px;overflow: scroll;" size="9"" name="chi" id="chi">   
+		<?php
+			$child=count($rc_child[1]["code"]);
+			for($i=1;$i<$child;$i++){
+			echo "<option value='".$rc_child[1]["code"][$i]."'>".$rc_child[1]["kora"][$i]."</option>";
+			}
+		?>
 			</td>
 		<td style="width:150px;">처치명&nbsp;<input type="text" style="width:60px;" disabled>
-				<select style="width:50px;">
+				<select style="width:50px;>
 	    	    <option value=""></option></select><hr style="margin: 5px 0 0 0;">
 				<select style="width:160px;" size="9">
 	    	    <option value=""></option></select>
@@ -421,11 +479,6 @@ if($event->TELE_FLAG){
             </span>                    
             <input MaxLength="200" id="Location" name="Location" style="width:95%;" type="text" value="<?php echo isset($event)?$event->Location:""; ?>" />                 
           </label>                   
-<?php
-    $rmdy_sql="SELECT * FROM  `toto_doctor`";	
-    $rmdy_hd = mysql_query($rmdy_sql);
-	
-?>
            
 			<label>
             <span>                        Remark:
@@ -439,6 +492,9 @@ if($event->TELE_FLAG){
       </div>         
     </div>
   </body>
+  <?php
+//  var_dump($rc_child);
+  ?>
   <script>
   
 			var kw = document.getElementById("keyword");
@@ -461,5 +517,6 @@ if($event->TELE_FLAG){
 		function subj(){//달력에 나올 내용 반영
 			sj.value=cn.value+" "+ct.value;
 		}
+
 	</script>
 </html>
