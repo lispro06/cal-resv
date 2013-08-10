@@ -50,12 +50,14 @@ if($_GET["id"]){
 	$event = getCalendarByRange($_GET["id"]);
 	$cb[$event->CUST_GUBN]="checked";//고객 구분 배열 2013-08-05
 	$reged_date=substr($event->REGI_DATE,0,10);
+	$regi_empl=$event->REGI_EMPL;
 }else{//2013-08-05 세부 일정 클릭 시 내용 수신
 	$reged_date=date("Y-m-d",time());
 	$cb["N"]="checked";//새 일정일 경우 고객은 신환으로 설정
 	$title_G = $_GET["title"];
 	$sarr_G = explode(" ", $_GET["start"]);
 	$earr_G = explode(" ", $_GET["end"]);
+	$regi_empl=$_SESSION["sunap"];
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -407,7 +409,7 @@ if($_GET["id"]){
 			<tr>
 			<td style="width:80px;">&nbsp;예약 접수자</td>
 			<td>
-				<input type="text" style="width:120px;" id="logged_ID" name="logged_ID" comment="로그인 세션 값" disabled></input>
+				<input type="text" style="width:120px;" id="logged_ID" name="logged_ID" comment="로그인 세션 값" disabled value="<?php echo $regi_empl;?>"></input>
 			</td>
 			</tr></table>
 		</td>
