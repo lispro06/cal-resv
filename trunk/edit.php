@@ -231,13 +231,61 @@ if($_GET["id"]){
 			}
 		}
 		
+<?php // 처치명 세팅하기
+	$cc_sql = "SELECT `CLNC_CODE` FROM `toto_ClinicCode` WHERE `CLNC_CODE` LIKE '%00' AND `USE__FLAG`=\"1\"";
+	$cc_hd = mysql_query($cc_sql);
+	while($row_cc = mysql_fetch_array($cc_hd)){
+	          $cc_parent[]=$row_cc[0];
+	}
+	$cc_sql = "SELECT `CLNC_CODE`, `CLNC_KORA` FROM `toto_ClinicCode` WHERE `CLNC_CODE` NOT LIKE '%00' AND `USE__FLAG`=\"1\"";
+	$cc_hd = mysql_query($cc_sql);
+	while($row_cc = mysql_fetch_array($cc_hd)){
+	          $pos=intval($row_cc[0]/100);
+	          $cc_child[$pos]["code"][]=$row_cc[0];
+	          $cc_child[$pos]["kora"][]=$row_cc[1];
+	}
+?>
+		function cc_setting(obj){
+			 ck = document.getElementById("CLNC_KORA");
+			 cc = document.getElementById("CLNC_CODE");
+			 cc.value = obj.value;
+			 ck.value = obj.options[obj.selectedIndex].text;
+		}
+		function cc_child(obj)
+		{
+		selectBox=document.getElementById("cc_chi");
+		if (null == selectBox || null == selectBox.options){
+		   return;
+		}
+		
+		var length = selectBox.options.length;
+		    for (var index=0;index<length ;index++){
+		    	selectBox.options.remove(0);
+		    }
+		var ov=obj.value;
+		switch(ov){
+		<?php
+			for($i=0;$i<count($cc_parent);$i++){
+				echo " case \"".$cc_parent[$i]."\" :\n";
+				for($j=0;$j<count($cc_child[$i]["code"]);$j++){
+					echo "var o".$j." = new Option(\"".$cc_child[$i]["kora"][$j]."\",\"".$cc_child[$i]["code"][$j]."\", true);\n";		
+					echo "selectBox.options[".$j."] = o".$j.";\n";
+				}
+				echo "		break;\n";
+			}
+		?>
+			default :
+				var option1 = new Option(ov, "1st_option", true);
+                     		selectBox.options[0] = option1;
+			}
+		} 		
 <?php // 진료명 세팅하기
 	$rc_sql = "SELECT `RMDY_CODE` FROM `toto_RemedyCode` WHERE `RMDY_CODE` LIKE '%00' AND `USE__FLAG`=\"1\"";
 	$rc_hd = mysql_query($rc_sql);
 	while($row_rc = mysql_fetch_array($rc_hd)){
 	          $rc_parent[]=$row_rc[0];
 	}
-	$rc_sql = "SELECT `RMDY_CODE`, `RMDY_ENGL` FROM `toto_RemedyCode` WHERE `RMDY_CODE` NOT LIKE '%00' AND `USE__FLAG`=\"1\"";
+	$rc_sql = "SELECT `RMDY_CODE`, `RMDY_KORA` FROM `toto_RemedyCode` WHERE `RMDY_CODE` NOT LIKE '%00' AND `USE__FLAG`=\"1\"";
 	$rc_hd = mysql_query($rc_sql);
 	while($row_rc = mysql_fetch_array($rc_hd)){
 	          $pos=intval($row_rc[0]/100);
@@ -267,8 +315,8 @@ if($_GET["id"]){
 		<?php
 			for($i=0;$i<count($rc_parent);$i++){
 				echo " case \"".$rc_parent[$i]."\" :\n";
-				for($j=0;$j<count($rc_child[$i+1]["code"]);$j++){
-					echo "var o".$j." = new Option(\"".$rc_child[$i+1]["kora"][$j]."\",\"".$rc_child[$i+1]["code"][$j]."\", true);\n";		
+				for($j=0;$j<count($rc_child[$i]["code"]);$j++){
+					echo "var o".$j." = new Option(\"".$rc_child[$i]["kora"][$j]."\",\"".$rc_child[$i]["code"][$j]."\", true);\n";		
 					echo "selectBox.options[".$j."] = o".$j.";\n";
 				}
 				echo "		break;\n";
@@ -279,6 +327,7 @@ if($_GET["id"]){
                      		selectBox.options[0] = option1;
 			}
 		} 
+
 
 </script>      
     <style type="text/css">     
@@ -358,7 +407,7 @@ if($_GET["id"]){
 			<td style="width:80px;">&nbsp;<u>진&nbsp;&nbsp;&nbsp;료&nbsp;&nbsp;&nbsp;명</u></td>
 			<td>
 			<?php
-			$rk_sql = "SELECT `RMDY_ENGL` FROM `toto_RemedyCode` WHERE `RMDY_CODE` = '".$event->RMDY_CODE."'";
+			$rk_sql = "SELECT `RMDY_KORA` FROM `toto_RemedyCode` WHERE `RMDY_CODE` = '".$event->RMDY_CODE."'";
 			$rk_hd=mysql_query($rk_sql);
 			$rk_row=mysql_fetch_array($rk_hd);
 			?>
@@ -368,7 +417,12 @@ if($_GET["id"]){
 			<tr>
 			<td style="width:80px;">&nbsp;처&nbsp;&nbsp;&nbsp;치&nbsp;&nbsp;&nbsp;명</td>
 			<td>
-				<input type="text" id="CLNC_CODE" name="CLNC_CODE" style="width:120px;" value="<?php echo $event->CLNC_CODE;?>"></input>
+			<?php //2013-08-12 헉
+			$cc_sql = "SELECT `CLNC_KORA` FROM `toto_ClinicCode` WHERE `CLNC_CODE` = '".$event->CLNC_CODE."'";
+			$cc_hd=mysql_query($cc_sql);
+			$cc_row=mysql_fetch_array($cc_hd);
+			?>
+				<input type="text" id="CLNC_KORA" name="CLNC_KORA" style="width:120px;" value="<?php echo $cc_row[0];?>"></input>
 			</td>
 			</tr>
 			<tr>
@@ -425,16 +479,27 @@ if($_GET["id"]){
 				<select style="width:160px;overflow: scroll;" size="9"" name="chi" id="chi" onchange="rc_setting(this);">   
 		<?php
 			$child=count($rc_child[1]["code"]);
-			for($i=1;$i<$child;$i++){
+			for($i=0;$i<$child;$i++){
 			echo "<option value='".$rc_child[1]["code"][$i]."'>".$rc_child[1]["kora"][$i]."</option>";
 			}
 		?>
 			</td>
-		<td style="width:150px;">처치명&nbsp;<input type="text" style="width:60px;" disabled>
-				<select style="width:50px;>
-	    	    <option value=""></option></select><hr style="margin: 5px 0 0 0;">
-				<select style="width:160px;" size="9">
-	    	    <option value=""></option></select>
+		<td style="width:150px;">처치명&nbsp;<input type="text" style="width:60px;" id="CLNC_CODE" name="CLNC_CODE" value="<?php echo $event->CLNC_CODE;?>"></input>
+				<select style="width:50px; id="cpar" name="cpar" onchange="cc_child(this)">
+		<?php
+			for($i=0;$i<count($cc_parent);$i++){
+			echo "<option value='".$cc_parent[$i]."'>".$cc_parent[$i]."</option>";
+			}
+		?>	    	    
+		    </select><hr style="margin: 5px 0 0 0;">
+				<select style="width:160px;" size="9" id="cc_chi" name="cc_chi" onchange="cc_setting(this);">
+		<?php
+			$child=count($cc_child[1]["code"]);
+			for($i=0;$i<$child;$i++){
+			echo "<option value='".$cc_child[1]["code"][$i]."'>".$cc_child[1]["kora"][$i]."</option>";
+			}
+		?>
+				</select>
 			</td>
 		</tr></table>
 		<table cellpadding="0" cellspacing="0" border="0" width="550"><tr>
