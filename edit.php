@@ -51,6 +51,14 @@ if($_GET["id"]){
 	$cb[$event->CUST_GUBN]="checked";//고객 구분 배열 2013-08-05
 	$reged_date=substr($event->REGI_DATE,0,10);
 	$regi_empl=$event->REGI_EMPL;
+	if($event->CUST_CNUM){
+	$c_sql = "select `CUST_IDEN`, `CUST_MEMO` from `toto_customer` where `CUST_CNUM` = '".$event->CUST_CNUM."';";
+    	$c_handle = mysql_query($c_sql);
+	$cu_row = mysql_fetch_array($c_handle);
+	$cust_iden=$cu_row[0];
+	$cust_memo=$cu_row[1];
+	}
+    
 }else{//2013-08-05 세부 일정 클릭 시 내용 수신
 	$reged_date=date("Y-m-d",time());
 	$cb["N"]="checked";//새 일정일 경우 고객은 신환으로 설정
@@ -366,8 +374,8 @@ if($_GET["id"]){
 		<div style="border:1px solid #333333;padding:2px;">
 		<span><b>&nbsp;<u>고객구분</u> <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" onchange="srch_on();" <?php echo $cb["N"];?> />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" <?php echo $cb["O"];?> onchange="srch_on();" />구환&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $event->CUST_CNUM;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
 		</span><br />
-		  <span><b>&nbsp;<u>고객성명</u>&nbsp;&nbsp;<input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $event->CUST_NAME;?>"></input>&nbsp;&nbsp;&nbsp; <u>연&nbsp;락&nbsp;처</u> <input class="required safe" name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $event->CUST_TELE;?>"></input>&nbsp;&nbsp; 주&nbsp;민&nbsp;번&nbsp;호 <input name="CUST_IDEN" id="CUST_IDEN" size="15" value="" disabled></input></b></span><br />
-		  <table><tr><td>고객메모<br />(특이사항)</td><td><textarea id="CUST_MEMO" name="CUST_MEMO" disabled style="width:480px;;height:30px;"></textarea></td></tr></table>
+		  <span><b>&nbsp;<u>고객성명</u>&nbsp;&nbsp;<input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $event->CUST_NAME;?>"></input>&nbsp;&nbsp;&nbsp; <u>연&nbsp;락&nbsp;처</u> <input class="required safe" name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $event->CUST_TELE;?>"></input>&nbsp;&nbsp; 주&nbsp;민&nbsp;번&nbsp;호 <input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $cust_iden;?>" disabled></input></b></span><br />
+		  <table><tr><td>고객메모<br />(특이사항)</td><td><textarea id="CUST_MEMO" name="CUST_MEMO" disabled style="width:480px;;height:30px;"><?php echo $cust_memo;?></textarea></td></tr></table>
 		  </div>
 		  <hr style="margin: 5px 0 0 0;border-color:white" >
 		  <label style="display:none;">
@@ -467,7 +475,7 @@ if($_GET["id"]){
 			</td>
 			</tr></table>
 		</td>
-		<td style="width:150px;">진료명&nbsp;<input type="text" style="width:60px;" id="RMDY_CODE" name="RMDY_CODE" value="<?php echo $event->RMDY_CODE;?>"></input>
+		<td style="width:150px;">진료명&nbsp;<input type="text" style="width:60px;" id="RMDY_CODE" name="RMDY_CODE" value="<?php echo $event->RMDY_CODE;?>" class="required safe"></input>
 				<select style="width:50px;" id="par" name="par" onchange="rc_child(this)">
 		<?php
 			$parent=count($rc_parent);
@@ -545,14 +553,26 @@ if($event->TELE_FLAG){
 					<tr>
 						<td>내원병원</td><td>내원일자</td><td>진단명</td><td>처치명</td><td>처치원장</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>
 					</tr>
-					<tr>
-						<td><?php echo $_SESSION['sunap'];?></td><td><?php echo $aclRow[6];?></td><td>진단명</td><td>처치명</td><td>처치원장</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>
+<?php
+	if($event->CUST_CNUM){
+		$sql = "SELECT `HOSP_CODE`, `RESV_YYMD`, `RMDY_CODE`, `CLNC_CODE`, `RMDY_DOCT` FROM `jqcalendar` ORDER BY `StartTime` DESC LIMIT 0, 5";
+		$c_hd = mysql_query($sql);
+		while($c_row = mysql_fetch_array($c_hd)){
+		     echo "<tr>\n";
+		     echo "<td>".$c_row[0]."</td><td>".$c_row[1]."</td><td>".$c_row[2]."</td><td>".$c_row[3]."</td><td>".$c_row[4]."</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>";
+		     }
+		}else{
+?>
+		<td><?php echo $_SESSION['sunap'];?></td><td><?php echo $aclRow[6];?></td><td>진단명</td><td>처치명</td><td>처치원장</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>
 					</tr>
+<?php
+}
+?>
 				</table>
 				</td>
 			</tr>
 			</table>
-
+<!--
             <span>                        장소:
             </span>                    
             <input MaxLength="200" id="Location" name="Location" style="width:95%;" type="text" value="<?php echo isset($event)?$event->Location:""; ?>" />                 
@@ -564,7 +584,7 @@ if($event->TELE_FLAG){
 <textarea cols="20" id="Description" name="Description" rows="2" style="width:95%; height:70px">
 <?php echo isset($event)?$event->Description:""; ?>
 </textarea>                
-          </label>                
+          </label>                -->
           <input id="timezone" name="timezone" type="hidden" value="" />           
         </form>         
       </div>         
