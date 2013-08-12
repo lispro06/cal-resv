@@ -205,6 +205,13 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
             function cal_onerror(type,data)
             {
                 $("#errorpannel").show();
+		var info = '';
+//  		for (var imsi in data) {
+//		    info += imsi + ' = ' + data[imsi] + '\n';
+//		}
+                window.setTimeout(function(){ $("#gridcontainer").reload(); },1);
+		alert(data.Msg);
+ 		// 과거 날짜 입력 발생에 따른 메시지 발생 2013-08-12
             }
             function Edit(data)
             {//2013-08-05 세부 일정 클릭 시 내용 전송 jquery.calendar.js 2478,25 / jqeury.calendar.js 2502,25 참고
