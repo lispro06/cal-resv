@@ -16,7 +16,7 @@ class DBConnection{
     $db = new DBConnection();
     $db->getConnection($dbname,$dbpass);
 include_once("functions.php");
-//기본 내용 입력
+//±âº» ³»¿ë ÀÔ·Â
 function addCalendar($st, $et, $sub, $ade, $re){
   $ret = array();
   try{
@@ -32,13 +32,18 @@ function addCalendar($st, $et, $sub, $ade, $re){
 	  .$re."', '"
       .$_SERVER['REMOTE_ADDR']."' )";
     //echo($sql);
-		if(mysql_query($sql)==false){
+if(js2PhpTime($st)>time()){
+    if(mysql_query($sql)==false){
       $ret['IsSuccess'] = false;
       $ret['Msg'] = mysql_error();
     }else{
       $ret['IsSuccess'] = true;
       $ret['Msg'] = 'add success';
       $ret['Data'] = mysql_insert_id();
+    }
+    }else{
+      $ret['IsSuccess'] = false;
+      $ret['Msg'] = '과거 날짜에는 예약할 수 없습니다.';
     }
 	}catch(Exception $e){
      $ret['IsSuccess'] = false;
@@ -47,7 +52,7 @@ function addCalendar($st, $et, $sub, $ade, $re){
   return $ret;
 }
 
-//세부 내용 입력
+//¼¼ºÎ ³»¿ë ÀÔ·Â
 function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz, $rmdy_doct, $cust_name, $cust_tele, $cust_cnum, $cust_gubn, $rmdy_code, $clnc_code, $clnc_gubn, $oper_chck, $inet_flag, $tele_flag, $resv_memo, $re){
   $ret = array();
   try{
@@ -78,7 +83,8 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz, $rm
       .mysql_real_escape_string($resv_memo)."', '"
       .$_SERVER['REMOTE_ADDR']."' )";
     //echo($sql);
-		if(mysql_query($sql)==false){
+if(js2PhpTime($st)>time()){
+    if(mysql_query($sql)==false){
       $ret['IsSuccess'] = false;
       $ret['Msg'] = mysql_error();
     }else{
@@ -86,6 +92,10 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz, $rm
       $ret['Msg'] = 'add success';
       $ret['Data'] = mysql_insert_id();
     }
+}else{
+      $ret['IsSuccess'] = false;
+      $ret['Msg'] = '과거 시간에는 예약하지 못합니다.';
+}
 	}catch(Exception $e){
      $ret['IsSuccess'] = false;
      $ret['Msg'] = $e->getMessage();
@@ -156,7 +166,7 @@ function listCalendar($day, $type){
   //echo $st . "--" . $et;
   return listCalendarByRange($st, $et);
 }
-//날짜 및 시간만 변경, 수정자, 수정 IP도 업데이트 됨
+//³¯Â¥ ¹× ½Ã°£¸¸ º¯°æ, ¼öÁ¤ÀÚ, ¼öÁ¤ IPµµ ¾÷µ¥ÀÌÆ® µÊ
 function updateCalendar($id, $st, $et, $uu){
   $ret = array();
   try{
@@ -184,7 +194,7 @@ function updateCalendar($id, $st, $et, $uu){
   }
   return $ret;
 }
-//세부 내용 업데이트
+//¼¼ºÎ ³»¿ë ¾÷µ¥ÀÌÆ®
 function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, $tz, $rmdy_doct, $cust_name, $cust_tele, $cust_cnum, $cust_gubn, $rmdy_code, $clnc_code, $clnc_gubn, $oper_chck, $inet_flag, $tele_flag, $resv_memo, $uu){
   $ret = array();
   try{
@@ -233,7 +243,7 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
 function removeCalendar($id){
   $ret = array();
   try{
-	//삭제 쿼리를 삭제 플래그로 설정
+	//»èÁ¦ Äõ¸®¸¦ »èÁ¦ ÇÃ·¡±×·Î ¼³Á¤
     //$sql = "delete from `jqcalendar` where `id`=" . $id;
     $sql = "update `jqcalendar` set"
       . " `UPDT_DATE`='" . php2MySqlTime(time()) . "', "
