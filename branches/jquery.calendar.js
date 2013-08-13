@@ -432,7 +432,7 @@
 
             //onclick=\"javascript:FunProxy('rowhandler',event,this);\"
             html.push("<div id=\"dvtec\"  class=\"scolltimeevent\"><table style=\"table-layout: fixed;", jQuery.browser.msie ? "" : "width:100%", "\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr><td>");
-            html.push("<table style=\"height: 1508px\" id=\"tgTable\" class=\"tg-timedevents\" cellspacing=\"0\" cellpadding=\"0\"><tbody>");
+            html.push("<table style=\"height: 3020px\" id=\"tgTable\" class=\"tg-timedevents\" cellspacing=\"0\" cellpadding=\"0\"><tbody>");
             BuildDayScollEventContainer(html, days, scollDayEvents);
             html.push("</tbody></table></td></tr></tbody></table></div>");
             gridcontainer.html(html.join(""));
@@ -699,7 +699,7 @@
                 ht.push(" colSpan='", dayarrs.length, "'");
             }
             ht.push("><div id=\"tgspanningwrapper\" class=\"tg-spanningwrapper\"><div style=\"font-size: 20px\" class=\"tg-hourmarkers\">");
-            for (var i = 0; i < 24; i++) {
+            for (var i = 0; i < 72; i++) {//시간 그리드를 그리는 부분
                 ht.push("<div class=\"tg-dualmarker\"></div>");
             }
             ht.push("</div></div></td></tr>");
@@ -725,11 +725,11 @@
                 var istoday = dateFormat.call(dayarrs[i].date, "yyyyMMdd") == dateFormat.call(new Date(), "yyyyMMdd");
                 // Today
                 if (istoday) {
-                    ht.push("<div style=\"margin-bottom: -1508px; height:1508px\" class=\"tg-today\">&nbsp;</div>");
+                    ht.push("<div style=\"margin-bottom: -3020px; height:3020px\" class=\"tg-today\">&nbsp;</div>");
                 }
                 //var eventC = $(eventWrap);
                 //onclick=\"javascript:FunProxy('rowhandler',event,this);\"
-                ht.push("<div  style=\"margin-bottom: -1508px; height: 1508px\" id='tgCol", i, "' class=\"tg-col-eventwrapper\">");
+                ht.push("<div  style=\"margin-bottom: -3020px; height: 3020px\" id='tgCol", i, "' class=\"tg-col-eventwrapper\">");
                 BuildEvents(ht, events[i], dayarrs[i]);
                 ht.push("</div>");
 
@@ -1309,18 +1309,67 @@
         function parseDate(str){
             return new Date(Date.parse(str));
         }
-        function gP(h, m) {
+        function gP(h, m) {//시간과 분을 이용해 분 결정 2013-08
             return h * (42*3) + parseInt(m / 60 * (42*3));
         }
-        function gW(ts1, ts2) {
+        function gW(ts1, ts2) {//옮긴 후 시간 결정
             var t1 = ts1 / (42*3);
             var t2 = parseInt(t1);
-            var t3 = t1 - t2 >= 0.5 ? 30 : 0;
+//            var t3 = t1 - t2 >= 0.5 ? 30 : 0;
+            var t3 = t1 - t2;
+	    var tt = 0;//분 결정
+	    switch(true){
+	    case (t3<0.15):
+		tt = 0;
+		break;
+	    case (t3<0.3):
+		tt = 10;
+		break;
+	    case (t3<0.4):
+		tt = 20;
+		break;
+	    case (t3<0.6):
+		tt = 30;
+		break;
+	    case (t3<0.8):
+		tt = 40;
+		break;
+	    default:
+		tt = 50;
+		break;
+	    }
+	
             var t4 = ts2 / (42*3);
             var t5 = parseInt(t4);
-            var t6 = t4 - t5 >= 0.5 ? 30 : 0;
-            return { sh: t2, sm: t3, eh: t5, em: t6, h: ts2 - ts1 };
+            var t6 = t4 - t5;
+
+	    var tm = 0;//분 결정
+	    switch(true){
+	    case (t6<0.15):
+		tm = 0;
+		break;
+	    case (t6<0.3):
+		tm = 10;
+		break;
+	    case (t6<0.4):
+		tm = 20;
+		break;
+	    case (t6<0.6):
+		tm = 30;
+		break;
+	    case (t6<0.8):
+		tm = 40;
+		break;
+	    default:
+		tm = 50;
+		break;
+	    }
+
+//            var t6 = tt >= 50 ? 0 : tt + 10;//50분을 경우 0분으로 설정
+	    t3 = t6 >= 1 ? t2 : t2 + 1;
+            return { sh: t2, sm: tt, eh: t5, em: tm, h: ts2 - ts1 };
         }
+
         function gH(y1, y2, pt) {
             var sy1 = Math.min(y1, y2);
             var sy2 = Math.max(y1, y2);
@@ -1353,6 +1402,7 @@
             var t5 = parseInt(t4);
             var t6 = tt >= 50 ? 0 : tt + 10;//50분을 경우 0분으로 설정
 	    t3 = t6 >= 1 ? t2 : t2 + 1;
+	    t6 = t6 + 10; // 20분 단위 예약으로 변경 2013-08
             return { sh: t2, sm: tt, eh: t3, em: t6, h: sy2 - sy1 };
         }
         function pZero(n) {
@@ -2260,7 +2310,7 @@
                             var tempdata;
                             if (!d.cpwrap) {
                                 tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h);
-                                var cpwrap = $("<div class='ca-evpi drag-chip-wrapper' style='top:" + ny + "px'/>").html(tempdata);
+                                var cpwrap = $("<div class='ca-evpi drag-chip-wrapper' style='top:" + ny+10 + "px'/>").html(tempdata);
                                 $(d.target).find("div.tg-col-overlaywrapper").append(cpwrap);
                                 d.cpwrap = cpwrap;
                             }
@@ -2487,7 +2537,7 @@
                         var wrapid = new Date().getTime();
                         tp = d.target.offset().top;
                         if (!d.cpwrap) {
-                            var gh = gH(d.sy, d.sy + 42, tp);
+                            var gh = gH(d.sy, d.sy + 42, tp);//클릭시 height 2013-08
                             var ny = gP(gh.sh, gh.sm);
                             var tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h);
                             d.cpwrap = $("<div class='ca-evpi drag-chip-wrapper' style='top:" + ny + "px'/>").html(tempdata);
