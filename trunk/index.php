@@ -137,6 +137,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                 theme:3,
                 showday: new Date(),
                 EditCmdhandler:Edit,
+                EditCusthandler:custEdit,
                 DeleteCmdhandler:Delete,
                 ViewCmdhandler:View,    
                 onWeekOrMonthToDay:wtd,
@@ -224,6 +225,21 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                 {
                     var url = StrFormat(eurl,data);
                     OpenModelWindow(url,{ width: 600, height: 400, caption:"세부 내용 입력",onclose:function(){
+                       $("#gridcontainer").reload();
+                    }});
+                }
+            }
+            function custEdit(data)
+            {//2013-08-18 고객정보 수정
+               var what = $("#bbit-cal-what").val();
+               var datestart = $("#bbit-cal-start").val();
+               var dateend = $("#bbit-cal-end").val();
+               var allday = $("#bbit-cal-allday").val();
+               var eurl="./cal/customer.php?id={0}&start="+datestart+"&end="+dateend+"&isallday={4}&title="+what;
+                if(data)
+                {
+                    var url = StrFormat(eurl,data);
+                    OpenModelWindow(url,{ width: 740, height: 400, caption:"고객 정보 입력",onclose:function(){
                        $("#gridcontainer").reload();
                     }});
                 }
