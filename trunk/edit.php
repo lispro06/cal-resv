@@ -419,7 +419,7 @@ if($_GET["id"]){
 			$rk_hd=mysql_query($rk_sql);
 			$rk_row=mysql_fetch_array($rk_hd);
 			?>
-				<input type="text" id="RMDY_KORA" name="RMDY_KORA" disabled style="width:120px;" value="<?php echo $rk_row[0];?>" class="required safe"></input>
+				<input type="text" id="RMDY_KORA" name="RMDY_KORA" style="width:120px;" value="<?php echo $rk_row[0];?>" class="required safe" readonly></input>
 			</td>
 			</tr>
 			<tr>
@@ -430,7 +430,7 @@ if($_GET["id"]){
 			$cc_hd=mysql_query($cc_sql);
 			$cc_row=mysql_fetch_array($cc_hd);
 			?>
-				<input type="text" id="CLNC_KORA" name="CLNC_KORA" style="width:120px;" value="<?php echo $cc_row[0];?>"></input>
+				<input type="text" id="CLNC_KORA" name="CLNC_KORA" style="width:120px;" value="<?php echo $cc_row[0];?>" readonly></input>
 			</td>
 			</tr>
 			<tr>
@@ -475,7 +475,7 @@ if($_GET["id"]){
 			</td>
 			</tr></table>
 		</td>
-		<td style="width:150px;">진료명&nbsp;<input type="text" style="width:60px;" id="RMDY_CODE" name="RMDY_CODE" value="<?php echo $event->RMDY_CODE;?>" class="required safe"></input>
+		<td style="width:150px;">진료명&nbsp;<input type="text" style="width:60px;" id="RMDY_CODE" name="RMDY_CODE" value="<?php echo $event->RMDY_CODE;?>" class="required safe" readonly></input>
 				<select style="width:50px;" id="par" name="par" onchange="rc_child(this)">
 		<?php
 			$parent=count($rc_parent);
@@ -492,7 +492,7 @@ if($_GET["id"]){
 			}
 		?>
 			</td>
-		<td style="width:150px;">처치명&nbsp;<input type="text" style="width:60px;" id="CLNC_CODE" name="CLNC_CODE" value="<?php echo $event->CLNC_CODE;?>"></input>
+		<td style="width:150px;">처치명&nbsp;<input type="text" style="width:60px;" id="CLNC_CODE" name="CLNC_CODE" value="<?php echo $event->CLNC_CODE;?>" readonly></input>
 				<select style="width:50px; id="cpar" name="cpar" onchange="cc_child(this)">
 		<?php
 			for($i=0;$i<count($cc_parent);$i++){
