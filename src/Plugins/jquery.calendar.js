@@ -432,7 +432,7 @@
 
             //onclick=\"javascript:FunProxy('rowhandler',event,this);\"
             html.push("<div id=\"dvtec\"  class=\"scolltimeevent\"><table style=\"table-layout: fixed;", jQuery.browser.msie ? "" : "width:100%", "\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr><td>");
-            html.push("<table style=\"height: 1008px\" id=\"tgTable\" class=\"tg-timedevents\" cellspacing=\"0\" cellpadding=\"0\"><tbody>");
+            html.push("<table style=\"height: 3020px\" id=\"tgTable\" class=\"tg-timedevents\" cellspacing=\"0\" cellpadding=\"0\"><tbody>");//1008을 3020으로
             BuildDayScollEventContainer(html, days, scollDayEvents);
             html.push("</tbody></table></td></tr></tbody></table></div>");
             gridcontainer.html(html.join(""));
@@ -699,7 +699,7 @@
                 ht.push(" colSpan='", dayarrs.length, "'");
             }
             ht.push("><div id=\"tgspanningwrapper\" class=\"tg-spanningwrapper\"><div style=\"font-size: 20px\" class=\"tg-hourmarkers\">");
-            for (var i = 0; i < 24; i++) {
+            for (var i = 0; i < 72; i++) {//24에서 72로 바꿈
                 ht.push("<div class=\"tg-dualmarker\"></div>");
             }
             ht.push("</div></div></td></tr>");
@@ -713,9 +713,9 @@
             var mHg = gP(h, m) - 4; //make middle alignment vertically
             ht.push("<div id=\"tgnowptr\" class=\"tg-nowptr\" style=\"left:0px;top:", mHg, "px\"></div>");
             var tmt = "";
-            for (var i = 0; i < 24; i++) {
+            for (var i = 0; i < 144; i++) {//24에서 144로 바꿈
                 tmt = fomartTimeShow(i);
-                ht.push("<div style=\"height: 41px\" class=\"tg-time\">", tmt, "</div>");
+                ht.push("<div style=\"height: 20px\" class=\"tg-time\">", tmt, "</div>");//41에서 20으로 바꿈
             }
             ht.push("</td>");
 
@@ -725,11 +725,11 @@
                 var istoday = dateFormat.call(dayarrs[i].date, "yyyyMMdd") == dateFormat.call(new Date(), "yyyyMMdd");
                 // Today
                 if (istoday) {
-                    ht.push("<div style=\"margin-bottom: -1008px; height:1008px\" class=\"tg-today\">&nbsp;</div>");
+                    ht.push("<div style=\"margin-bottom: -3020px; height:3020px\" class=\"tg-today\">&nbsp;</div>");//1008에서 3020으로 바꿈
                 }
                 //var eventC = $(eventWrap);
                 //onclick=\"javascript:FunProxy('rowhandler',event,this);\"
-                ht.push("<div  style=\"margin-bottom: -1008px; height: 1008px\" id='tgCol", i, "' class=\"tg-col-eventwrapper\">");
+                ht.push("<div  style=\"margin-bottom: -3020px; height: 3020px\" id='tgCol", i, "' class=\"tg-col-eventwrapper\">");//1008에서 3020으로 바꿈
                 BuildEvents(ht, events[i], dayarrs[i]);
                 ht.push("</div>");
 
@@ -1309,28 +1309,100 @@
         function parseDate(str){
             return new Date(Date.parse(str));
         }
-        function gP(h, m) {
-            return h * 42 + parseInt(m / 60 * 42);
+        function gP(h, m) {//시간과 분을 이용해 분 결정 2013-08
+            return h * (42*3) + parseInt(m / 60 * (42*3));
         }
         function gW(ts1, ts2) {
-            var t1 = ts1 / 42;
+            var t1 = ts1 / (42*3);
             var t2 = parseInt(t1);
-            var t3 = t1 - t2 >= 0.5 ? 30 : 0;
-            var t4 = ts2 / 42;
+//            var t3 = t1 - t2 >= 0.5 ? 30 : 0;
+            var t3 = t1 - t2;
+            var tt = 0;//분 결정
+            switch(true){
+            case (t3<0.15):
+                tt = 0;
+                break;
+            case (t3<0.3):
+                tt = 10;
+                break;
+            case (t3<0.4):
+                tt = 20;
+                break;
+            case (t3<0.6):
+                tt = 30;
+                break;
+            case (t3<0.8):
+                tt = 40;
+                break;
+            default:
+                tt = 50;
+                break;
+            }
+        
+            var t4 = ts2 / (42*3);
             var t5 = parseInt(t4);
-            var t6 = t4 - t5 >= 0.5 ? 30 : 0;
-            return { sh: t2, sm: t3, eh: t5, em: t6, h: ts2 - ts1 };
+            var t6 = t4 - t5;
+
+            var tm = 0;//분 결정
+            switch(true){
+            case (t6<0.15):
+                tm = 0;
+                break;
+            case (t6<0.3):
+                tm = 10;
+                break;
+            case (t6<0.4):
+                tm = 20;
+                break;
+            case (t6<0.6):
+                tm = 30;
+                break;
+            case (t6<0.8):
+                tm = 40;
+                break;
+            default:
+                tm = 50;
+                break;
+            }
+
+//            var t6 = tt >= 50 ? 0 : tt + 10;//50분을 경우 0분으로 설정
+            t3 = t6 >= 1 ? t2 : t2 + 1;
+            return { sh: t2, sm: tt, eh: t5, em: tm, h: ts2 - ts1 };
         }
         function gH(y1, y2, pt) {
             var sy1 = Math.min(y1, y2);
             var sy2 = Math.max(y1, y2);
-            var t1 = (sy1 - pt) / 42;
+            var t1 = (sy1 - pt) / (42*3);
             var t2 = parseInt(t1);
-            var t3 = t1 - t2 >= 0.5 ? 30 : 0;
-            var t4 = (sy2 - pt) / 42;
+            var t3 = t1 - t2;
+            var tt = 0;//분 결정
+            switch(true){
+            case (t3<0.2):
+                tt = 0;
+                break;
+            case (t3<0.4):
+                tt = 10;
+                break;
+            case (t3<0.5):
+                tt = 20;
+                break;
+            case (t3<0.6):
+                tt = 30;
+                break;
+            case (t3<0.85):
+                tt = 40;
+                break;
+            default:
+                tt = 50;
+                break;
+            }
+                
+            var t4 = (sy2 - pt) / (42*3);
             var t5 = parseInt(t4);
-            var t6 = t4 - t5 >= 0.5 ? 30 : 0;
-            return { sh: t2, sm: t3, eh: t5, em: t6, h: sy2 - sy1 };
+            var t6 = tt >= 50 ? 0 : tt + 10;//50분을 경우 0분으로 설정
+            t3 = t6 >= 1 ? t2 : t2 + 1;
+            t6 = t6 + 10; // 20분 단위 예약으로 변경 2013-08
+            return { sh: t2, sm: tt, eh: t3, em: t6, h: sy2 - sy1 };
         }
         function pZero(n) {
             return n < 10 ? "0" + n : "" + n;
@@ -1350,8 +1422,10 @@
         function Ta(temp, dataarry) {
             return temp.replace(/\{([\d])\}/g, function(s1, s2) { var s = dataarry[s2]; if (typeof (s) != "undefined") { return encodeURIComponent(s); } else { return ""; } });
         }
-        function fomartTimeShow(h) {
-            return h < 10 ? "0" + h + ":00" : h + ":00";
+        function fomartTimeShow(h) {//2013-08-29 10분 단위 캘린더 적용
+                        hh = parseInt(h/6);
+                        m = (h%6);
+            return hh < 10 ? "0" + hh + ":" + m + "0" : hh + ":" + m + "0";
         }
         function getymformat(date, comparedate, isshowtime, isshowweek, showcompare) {
             var showyear = isshowtime != undefined ? (date.getFullYear() != new Date().getFullYear()) : true;
@@ -1520,11 +1594,11 @@
                 data = getdata($(this));
             }
             if (data != null) {
-                if (option.quickDeleteUrl != "" && data[8] == 1 && option.readonly != true) {//항목이 있을 때의 레이어
+                if (option.quickDeleteUrl != "" && data[8] == 1 && option.readonly != true) {//항목이 있을 때의 레이어 - 고객 입력 필요
                     var csbuddle = '<div id="bbit-cs-buddle" style="z-index: 180; width: 400px;visibility:hidden;" class="bubble"><table class="bubble-table" cellSpacing="0" cellPadding="0"><tbody><tr><td class="bubble-cell-side"><div id="tl1" class="bubble-corner"><div class="bubble-sprite bubble-tl"></div></div><td class="bubble-cell-main"><div class="bubble-top"></div><td class="bubble-cell-side"><div id="tr1" class="bubble-corner"><div class="bubble-sprite bubble-tr"></div></div>  <tr><td class="bubble-mid" colSpan="3"><div style="overflow: hidden" id="bubbleContent1"><div><div></div><div class="cb-root"><table class="cb-table" cellSpacing="0" cellPadding="0"><tbody><tr><td class="cb-value"><div class="textbox-fill-wrapper"><div class="textbox-fill-mid"><div id="bbit-cs-what" title="'
                     	+ i18n.xgcalendar.click_to_detail + '" class="textbox-fill-div lk" style="cursor:pointer;"></div></div></div></td></tr><tr><td class=cb-value><div id="bbit-cs-buddle-timeshow"></div></td></tr></tbody></table><div class="bbit-cs-split"><input id="bbit-cs-id" type="hidden" value=""/>[ <span id="bbit-cs-delete" class="lk">'
                     	+ i18n.xgcalendar.i_delete + '</span> ]&nbsp; <SPAN id="bbit-cs-editLink" class="lk">'
-                    	+ i18n.xgcalendar.update_detail + ' <StrONG>&gt;&gt;</StrONG></SPAN><br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN id="bbit-cust-editLink" class="lk">'
+                    	+ i18n.xgcalendar.update_detail + ' <StrONG>&gt;&gt;</StrONG></SPAN>&nbsp; <SPAN id="bbit-new-editLink" class="lk">' + i18n.xgcalendar.create_event + ' <StrONG>&gt;&gt;</StrONG></SPAN><SPAN id="bbit-cust-editLink" class="lk"><br />'
 						+ i18n.xgcalendar.customer_detail + ' <StrONG>&gt;&gt;</StrONG></SPAN></div></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose2" class="bubble-closebutton"></div><div id="prong1" class="prong"><div class=bubble-sprite></div></div></div>';
                     var bud = $("#bbit-cs-buddle");
                     if (bud.length == 0) {
@@ -1532,6 +1606,7 @@
                         var calbutton = $("#bbit-cs-delete");
                         var lbtn = $("#bbit-cs-editLink");
                         var clbtn = $("#bbit-cust-editLink");
+						var calbtn = $("#bbit-new-editLink");//같은 영역에 신규 입력 링크
                         var closebtn = $("#bubbleClose2").click(function() {
                             $("#bbit-cs-buddle").css("visibility", "hidden");
                         });
@@ -1582,6 +1657,20 @@
                             $("#bbit-cs-buddle").css("visibility", "hidden");
                             return false;
                         });
+						// 같은 영역의 신규 일정
+						calbtn.click(function(e) {
+							if (!option.EditCmdhandler) {
+								alert("EditCmdhandler" + i18n.xgcalendar.i_undefined);
+							}
+							else {
+								if (option.EditCmdhandler && $.isFunction(option.EditCmdhandler)) {
+									option.EditCmdhandler.call(this, ['0', $("#bbit-cal-what").val(), $("#bbit-cal-start").val(), $("#bbit-cal-end").val(), $("#bbit-cal-allday").val()]);
+								}
+								$("#bbit-cal-buddle").css("visibility", "hidden");
+								realsedragevent();
+							}
+							return false;
+						});
                         clbtn.click(function(e) {
                             if (!option.EditCusthandler) {
                                 alert("EditCusthandler" + i18n.xgcalendar.i_undefined);
@@ -1756,7 +1845,7 @@
             }
             var buddle = $("#bbit-cal-buddle");
             if (buddle.length == 0) {
-                var temparr = [];
+                var temparr = [];//항목이 없을 때의 레이어
                 temparr.push('<div id="bbit-cal-buddle" style="z-index: 180; width: 400px;visibility:hidden;" class="bubble">');
                 temparr.push('<table class="bubble-table" cellSpacing="0" cellPadding="0"><tbody><tr><td class="bubble-cell-side"><div id="tl1" class="bubble-corner"><div class="bubble-sprite bubble-tl"></div></div>');
                 temparr.push('<td class="bubble-cell-main"><div class="bubble-top"></div><td class="bubble-cell-side"><div id="tr1" class="bubble-corner"><div class="bubble-sprite bubble-tr"></div></div>  <tr><td class="bubble-mid" colSpan="3"><div style="overflow: hidden" id="bubbleContent1"><div><div></div><div class="cb-root">');
@@ -1765,8 +1854,8 @@
                 temparr.push(i18n.xgcalendar.content, ':</th><td class="cb-value"><div class="textbox-fill-wrapper"><div class="textbox-fill-mid"><input id="bbit-cal-what" class="textbox-fill-input"/></div></div><div class="cb-example">');
                 temparr.push(i18n.xgcalendar.example, '</div></td></tr></tbody></table><input id="bbit-cal-start" type="hidden"/><input id="bbit-cal-end" type="hidden"/><input id="bbit-cal-allday" type="hidden"/><input id="bbit-cal-quickAddBTN" value="');
                 temparr.push(i18n.xgcalendar.create_event, '" type="button"/>&nbsp; <SPAN id="bbit-cal-editLink" class="lk">');
-                temparr.push(i18n.xgcalendar.update_detail, ' <StrONG>&gt;&gt;</StrONG></SPAN><br /><SPAN id="customer-editLink" class="lk">');
-				temparr.push(i18n.xgcalendar.customer_detail,' <StrONG>&gt;&gt;</StrONG></SPAN></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose1" class="bubble-closebutton"></div><div id="prong2" class="prong"><div class=bubble-sprite></div></div></div>');
+                temparr.push(i18n.xgcalendar.update_detail, ' <StrONG>&gt;&gt;</StrONG></SPAN><br /><!--SPAN id="customer-editLink" class="lk">');
+				temparr.push(i18n.xgcalendar.customer_detail,' <StrONG>&gt;&gt;</StrONG></SPAN--></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose1" class="bubble-closebutton"></div><div id="prong2" class="prong"><div class=bubble-sprite></div></div></div>');
                 var tempquickAddHanler = temparr.join("");
                 temparr = null;
                 $(document.body).append(tempquickAddHanler);
@@ -2266,7 +2355,7 @@
                             var tempdata;
                             if (!d.cpwrap) {
                                 tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h);
-                                var cpwrap = $("<div class='ca-evpi drag-chip-wrapper' style='top:" + ny + "px'/>").html(tempdata);
+                                var cpwrap = $("<div class='ca-evpi drag-chip-wrapper' style='top:" + ny+10 + "px'/>").html(tempdata);//ny를 ny+10으로
                                 $(d.target).find("div.tg-col-overlaywrapper").append(cpwrap);
                                 d.cpwrap = cpwrap;
                             }
@@ -2493,7 +2582,7 @@
                         var wrapid = new Date().getTime();
                         tp = d.target.offset().top;
                         if (!d.cpwrap) {
-                            var gh = gH(d.sy, d.sy + 42, tp);
+                            var gh = gH(d.sy, d.sy + 42, tp);//클릭시 height 2013-08
                             var ny = gP(gh.sh, gh.sm);
                             var tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h);
                             d.cpwrap = $("<div class='ca-evpi drag-chip-wrapper' style='top:" + ny + "px'/>").html(tempdata);
