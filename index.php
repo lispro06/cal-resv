@@ -128,11 +128,17 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
     <script src="src/Plugins/jquery.calendar.js" type="text/javascript"></script>   
     
     <script type="text/javascript">
-        $(document).ready(function() {     
+	var doct_ck;
+	var dev_ck;
+        $(document).ready(function() {
+		 doct_ck=document.getElementById("doctdiv").checked;//원장 체크 여부 확인
+		 dev_ck=document.getElementById("devdiv").checked;//장비 체크 여부 확인
            var view="week";          
            var re="<?php echo $_SESSION['sunap'];?>";
             var DATA_FEED_URL = "./cal/datafeed.php";
             var op = {
+                doc: doct_ck,
+                dev: dev_ck,
                 view: view,
                 theme:3,
                 showday: new Date(),
@@ -356,7 +362,20 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                     $("#txtdatetimeshow").text(p.datestrshow);
                 }
             });
-            
+            // 원장
+            $("#doctdiv").click(function(e){
+				op.doc=document.getElementById("doctdiv").checked;//원장 체크 여부 확인
+				op.dev=document.getElementById("devdiv").checked;//장비 체크 여부 확인
+				$("#gridcontainer").BcalSetOp(op);
+                $("#gridcontainer").reload();
+            });
+            // 장비
+            $("#devdiv").click(function(e){
+				op.doc=document.getElementById("doctdiv").checked;//원장 체크 여부 확인
+				op.dev=document.getElementById("devdiv").checked;//장비 체크 여부 확인
+				$("#gridcontainer").BcalSetOp(op);
+                $("#gridcontainer").reload();
+            });
         });
     </script>    
 </head>
@@ -414,6 +433,9 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                     </div>
             </div>
             
+            <div id="optiondiv" title="선택" class="fbutton">
+                <span><input type="checkbox" id="doctdiv" name="doctdiv" checked>원장<input type="checkbox" id="devdiv" name="devdiv" checked>장비</span>
+            </div>
             <div class="clear"></div>
             </div>
       </div>
