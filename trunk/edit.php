@@ -421,10 +421,16 @@ if($_GET["id"]){
 			  </table>
 	<table cellpadding="0" cellspacing="0" border="0" width="550"><tr><td width="200">
 			<table><tr>
-			<td style="width:80px;">&nbsp;예&nbsp;약&nbsp;병&nbsp;원</td>
+			<td style="width:80px;">&nbsp;<u>예&nbsp;약&nbsp;병&nbsp;원</u></td>
 			<td>
-				<select name="HOSP_CODE" id="HOSP_CODE" style="width:120px;">
-	    	    <option value="">병원선택</option></select>
+<?php
+	if($event->HOSP_CODE=="1234"){
+		$code["1234"]="selected";
+	}
+?>
+				<select name="HOSP_CODE" id="HOSP_CODE" style="width:120px;" class="required safe">
+	    	    <option value=""></option>
+	    	    <option value="1234" <?php echo $code["1234"];?>>기본병원</option></select>
 			</td>
 			</tr>
 			<tr>
@@ -566,15 +572,16 @@ if($event->TELE_FLAG){
             </div>                
           </label>                 
           <label>
-		  <table border="1" width="500">
+		  <table border="1" width="550">
 			<tr>
-				<td width="100">진료/처치내역</td><td width="100">예약내역</td><td></td>
+				<td width="100"><a href="#rdiv" onclick="rc_view();">진료/처치내역</a></td><td width="100"><a href="#rdiv" onclick="rv_view();">예약내역</a></td><td></td>
 			</tr>
 			<tr>
 				<td colspan="3">
+				<div id="rmdyclnc" name="rmdyclnc" style="display:block;">
 				<table>
-					<tr>
-						<td>내원병원</td><td>내원일자</td><td>진단명</td><td>처치명</td><td>처치원장</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>
+					<tr><a name="rdiv"></a>
+						<td>내원병원</td><td width="120">내원일자</td><td>진단명</td><td>처치명</td><td>처치원장</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>
 					</tr>
 <?php
 	if($event->CUST_CNUM){
@@ -582,16 +589,37 @@ if($event->TELE_FLAG){
 		$c_hd = mysql_query($sql);
 		while($c_row = mysql_fetch_array($c_hd)){
 		     echo "<tr>\n";
-		     echo "<td>".$c_row[0]."</td><td>".$c_row[1]."</td><td>".$c_row[2]."</td><td>".$c_row[3]."</td><td>".$c_row[4]."</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>";
+		     echo "<td>".code2hosp($c_row[0])."</td><td>".$c_row[1]."</td><td>".code2rmdy($c_row[2])."</td><td>".code2clnc($c_row[3])."</td><td>".code2doct($c_row[4])."</td><td></td><td></td><td>전체</td>";
 		     }
 		}else{
 ?>
-		<td><?php echo $_SESSION['sunap'];?></td><td><?php echo $aclRow[6];?></td><td>진단명</td><td>처치명</td><td>처치원장</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>
+		<td><?php //echo $_SESSION['sunap'];?></td><td><?php //echo $aclRow[6];?></td><td></td><td></td><td></td><td></td><td></td><td></td>
 					</tr>
 <?php
 }
 ?>
-				</table>
+				</table></div>
+				<div id="reserv" name="reserv" style="display:none;">
+				<table align="center">
+					<tr><a name="rdiv"></a>
+						<td>예약병원</td><td width="120">예약일자</td><td>예약시간</td><td>진료명</td><td width="150">예약메모</td><td>원장/장비</td>
+					</tr>
+<?php
+	if($event->CUST_CNUM){
+		$sql = "SELECT `HOSP_CODE`, `RESV_YYMD`, `RSST_HHMI`, `RMDY_CODE`, `RESV_MEMO`, `ASIN_SEQN` FROM `jqcalendar` ORDER BY `StartTime` DESC LIMIT 0, 5";
+		$c_hd = mysql_query($sql);
+		while($c_row = mysql_fetch_array($c_hd)){
+		     echo "<tr>\n";
+		     echo "<td>".code2hosp($c_row[0])."</td><td>".$c_row[1]."</td><td>".$c_row[2]."</td><td>".code2rmdy($c_row[3])."</td><td>".$c_row[4]."</td><td>".code2asin($c_row[5])."</td>";
+		     }
+		}else{
+?>
+		<td><?php //echo $_SESSION['sunap'];?></td><td><?php //echo $aclRow[6];?></td><td></td><td></td><td></td><td></td><td></td><td></td>
+					</tr>
+<?php
+}
+?>
+				</table></div>
 				</td>
 			</tr>
 			</table>
@@ -615,6 +643,44 @@ if($event->TELE_FLAG){
   </body>
   <?php
 //  var_dump($rc_child);
+function code2rmdy($cd){
+	$rc_sql = "SELECT `RMDY_CODE`, `RMDY_KORA`, `RMDY_ENGL` FROM `toto_RemedyCode` WHERE `RMDY_CODE`='".$cd."'";
+	$rc_hd = mysql_query($rc_sql);
+	$row_rc = mysql_fetch_array($rc_hd);
+	return $row_rc[1];
+	}
+function code2clnc($cd){
+	$cc_sql = "SELECT `CLNC_CODE`, `CLNC_KORA`, `CLNC_ENGL` FROM `toto_ClinicCode` WHERE `CLNC_CODE`='".$cd."'";
+	$cc_hd = mysql_query($cc_sql);
+	$row_cc = mysql_fetch_array($cc_hd);
+	return $row_cc[1];
+	}
+function code2doct($cd){
+	$cc_sql = "SELECT `doct_name` FROM `toto_doctor` WHERE `doct_numb`='".$cd."'";
+	$cc_hd = mysql_query($cc_sql);
+	$row_cc = mysql_fetch_array($cc_hd);
+	return $row_cc[1];
+	}
+function code2hosp($cd){
+	if($cd=="1234")
+		return "기본병원";
+}
+function code2asin($cd){
+	switch($cd){
+		case "1" :
+		return "관리";
+		break;
+		case "2" :
+		return "가예약";
+		break;
+		case "3" :
+		return "병원일정";
+		break;
+		case "4" :
+		return "고객일정";
+		break;
+	}
+}
   ?>
   <script>
   
@@ -641,6 +707,16 @@ if($event->TELE_FLAG){
 			var cv = document.getElementById("colorvalue");
 		function as_color(obj){//관리/장비에 따른 색 지정
 			cv.value=obj.value;
+		}
+			var rdiv = document.getElementById("reserv");
+			var rcdiv = document.getElementById("rmdyclnc");
+		function rc_view(){//관리/장비에 따른 색 지정
+			rdiv.style.display = "none";
+			rcdiv.style.display = "block";
+		}
+		function rv_view(){//관리/장비에 따른 색 지정
+			rdiv.style.display = "block";
+			rcdiv.style.display = "none";
 		}
 	</script>
 </html>
