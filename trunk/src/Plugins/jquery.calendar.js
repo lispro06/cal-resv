@@ -1659,12 +1659,12 @@
                         });
 						// 같은 영역의 신규 일정
 						calbtn.click(function(e) {
-							if (!option.EditCmdhandler) {
-								alert("EditCmdhandler" + i18n.xgcalendar.i_undefined);
+							if (!option.EditCmdhandler2) {
+								alert("EditCmdhandler2" + i18n.xgcalendar.i_undefined);
 							}
 							else {
-								if (option.EditCmdhandler && $.isFunction(option.EditCmdhandler)) {
-									option.EditCmdhandler.call(this, ['0', $("#bbit-cal-what").val(), $("#bbit-cal-start").val(), $("#bbit-cal-end").val(), $("#bbit-cal-allday").val()]);
+								if (option.EditCmdhandler2 && $.isFunction(option.EditCmdhandler2)) {
+                                    option.EditCmdhandler2.call(this, $("#bbit-cs-buddle").data("cdata"));
 								}
 								$("#bbit-cal-buddle").css("visibility", "hidden");
 								realsedragevent();
@@ -1851,10 +1851,10 @@
                 temparr.push('<td class="bubble-cell-main"><div class="bubble-top"></div><td class="bubble-cell-side"><div id="tr1" class="bubble-corner"><div class="bubble-sprite bubble-tr"></div></div>  <tr><td class="bubble-mid" colSpan="3"><div style="overflow: hidden" id="bubbleContent1"><div><div></div><div class="cb-root">');
                 temparr.push('<table class="cb-table" cellSpacing="0" cellPadding="0"><tbody><tr><th class="cb-key">');
                 temparr.push(i18n.xgcalendar.time, ':</th><td class=cb-value><div id="bbit-cal-buddle-timeshow"></div></td></tr><tr><th class="cb-key">');
-                temparr.push(i18n.xgcalendar.content, ':</th><td class="cb-value"><div class="textbox-fill-wrapper"><div class="textbox-fill-mid"><input id="bbit-cal-what" class="textbox-fill-input"/></div></div><div class="cb-example">');
-                temparr.push(i18n.xgcalendar.example, '</div></td></tr></tbody></table><input id="bbit-cal-start" type="hidden"/><input id="bbit-cal-end" type="hidden"/><input id="bbit-cal-allday" type="hidden"/><input id="bbit-cal-quickAddBTN" value="');
-                temparr.push(i18n.xgcalendar.create_event, '" type="button"/>&nbsp; <SPAN id="bbit-cal-editLink" class="lk">');
-                temparr.push(i18n.xgcalendar.update_detail, ' <StrONG>&gt;&gt;</StrONG></SPAN><br /><!--SPAN id="customer-editLink" class="lk">');
+                temparr.push(i18n.xgcalendar.content, ':</th><td class="cb-value"><div class="textbox-fill-wrapper"><div class="textbox-fill-mid"><!--input id="bbit-cal-what" class="textbox-fill-input"/--></div></div><div class="cb-example">');
+                temparr.push(i18n.xgcalendar.example, '</div></td></tr></tbody></table><input id="bbit-cal-start" type="hidden"/><input id="bbit-cal-end" type="hidden"/><input id="bbit-cal-allday" type="hidden"/><!--input id="bbit-cal-quickAddBTN" value="');
+                temparr.push(i18n.xgcalendar.create_event, '" type="button"/-->&nbsp; <SPAN id="bbit-cal-editLink" class="lk">');
+                temparr.push(i18n.xgcalendar.create_event, ' <StrONG>&gt;&gt;</StrONG></SPAN><br /><!--SPAN id="customer-editLink" class="lk">');
 				temparr.push(i18n.xgcalendar.customer_detail,' <StrONG>&gt;&gt;</StrONG></SPAN--></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose1" class="bubble-closebutton"></div><div id="prong2" class="prong"><div class=bubble-sprite></div></div></div>');
                 var tempquickAddHanler = temparr.join("");
                 temparr = null;
