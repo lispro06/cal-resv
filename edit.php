@@ -48,15 +48,20 @@ function getCalendarByRange($id){
 }
 if($_GET["id"]){
 	$event = getCalendarByRange($_GET["id"]);
+	$sarr = explode(" ", php2JsTime(mySql2PhpTime($event->StartTime)));
+	$earr = explode(" ", php2JsTime(mySql2PhpTime($event->EndTime)));
+	if($_GET["same"]){
+		$event="";
+	}
 	$cb[$event->CUST_GUBN]="checked";//고객 구분 배열 2013-08-05
 	$reged_date=substr($event->REGI_DATE,0,10);
 	$regi_empl=$event->REGI_EMPL;
 	if($event->CUST_CNUM){
-	$c_sql = "select `CUST_IDEN`, `CUST_MEMO` from `toto_customer` where `CUST_CNUM` = '".$event->CUST_CNUM."';";
+		$c_sql = "select `CUST_IDEN`, `CUST_MEMO` from `toto_customer` where `CUST_CNUM` = '".$event->CUST_CNUM."';";
     	$c_handle = mysql_query($c_sql);
-	$cu_row = mysql_fetch_array($c_handle);
-	$cust_iden=$cu_row[0];
-	$cust_memo=$cu_row[1];
+		$cu_row = mysql_fetch_array($c_handle);
+		$cust_iden=$cu_row[0];
+		$cust_memo=$cu_row[1];
 	}
     
 }else{//2013-08-05 세부 일정 클릭 시 내용 수신
@@ -375,8 +380,18 @@ if($_GET["id"]){
       </div>                  
       <div style="clear: both">         
       </div>        
-      <div class="infocontainer">            
+      <div class="infocontainer">
+<?php
+	if($_GET["same"]){
+?>
+        <form action="./datafeed.php?method=adddetails&re=<?php echo $_SESSION['sunap'];?>" class="fform" id="fmEdit" method="post">
+<?php
+	}else{
+?>
         <form action="./datafeed.php?method=adddetails<?php echo isset($event)?"&id=".$event->Id:""; ?>&re=<?php echo $_SESSION['sunap'];?>" class="fform" id="fmEdit" method="post">
+<?php
+	}
+?>
 		<div style="border:1px solid #333333;padding:2px;">
 		<span><b>&nbsp;<u>고객구분</u> <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" onchange="srch_on();" <?php echo $cb["N"];?> />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" <?php echo $cb["O"];?> onchange="srch_on();" />구환&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $event->CUST_CNUM;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
 		</span><br />
@@ -394,11 +409,6 @@ if($_GET["id"]){
 			<tr>
 			<td>
 			&nbsp;<u>예&nbsp;약&nbsp;일&nbsp;정</u>&nbsp;&nbsp;
-              <?php if(isset($event)){
-                  $sarr = explode(" ", php2JsTime(mySql2PhpTime($event->StartTime)));
-                  $earr = explode(" ", php2JsTime(mySql2PhpTime($event->EndTime)));
-              }
-			  ?> 
               <input MaxLength="10" class="required date" id="stpartdate" name="stpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$sarr[0]:""; ?><?php echo $sarr_G[0]; ?>" />                       
               <input MaxLength="5" class="required time" id="stparttime" name="stparttime" style="width:40px;" type="text" value="<?php echo isset($event)?$sarr[1]:""; ?><?php echo $sarr_G[1]; ?>" />To                       
               <input MaxLength="10" class="required date" id="etpartdate" name="etpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$earr[0]:""; ?><?php echo $earr_G[0]; ?>" />                       
@@ -436,7 +446,7 @@ if($_GET["id"]){
 			$cc_hd=mysql_query($cc_sql);
 			$cc_row=mysql_fetch_array($cc_hd);
 			?>
-				<input type="text" id="CLNC_KORA" name="CLNC_KORA" style="width:120px;" value="<?php echo $cc_row[0]." / ".$cc_row[1];?>" readonly></input>
+				<input type="text" id="CLNC_KORA" name="CLNC_KORA" style="width:120px;" value="<?php echo $cc_row[0];?>" readonly></input>
 			</td>
 			</tr>
 			<tr>
