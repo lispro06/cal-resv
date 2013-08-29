@@ -137,6 +137,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                 theme:3,
                 showday: new Date(),
                 EditCmdhandler:Edit,
+                EditCmdhandler2:Edit2,
                 EditCusthandler:custEdit,
                 DeleteCmdhandler:Delete,
                 ViewCmdhandler:View,    
@@ -221,6 +222,21 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                var dateend = $("#bbit-cal-end").val();
                var allday = $("#bbit-cal-allday").val();
                var eurl="./cal/edit.php?id={0}&start="+datestart+"&end="+dateend+"&isallday={4}&title="+what;
+                if(data)
+                {
+                    var url = StrFormat(eurl,data);
+                    OpenModelWindow(url,{ width: 600, height: 400, caption:"세부 내용 입력",onclose:function(){
+                       $("#gridcontainer").reload();
+                    }});
+                }
+            }
+            function Edit2(data)
+            {//2013-08-05 세부 일정 클릭 시 내용 전송 jquery.calendar.js 2478,25 / jqeury.calendar.js 2502,25 참고
+               var what = $("#bbit-cal-what").val();
+               var datestart = $("#bbit-cal-start").val();
+               var dateend = $("#bbit-cal-end").val();
+               var allday = $("#bbit-cal-allday").val();
+               var eurl="./cal/edit.php?id={0}&start="+datestart+"&end="+dateend+"&isallday={4}&title="+what+"&same=1";
                 if(data)
                 {
                     var url = StrFormat(eurl,data);
