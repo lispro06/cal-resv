@@ -1151,7 +1151,8 @@
                 { name: "viewtype", value: option.view },
 				 { name: "timezone", value: zone },
 				 { name: "doct_ck", value: option.doc },
-				 { name: "dev_ck", value: option.dev }
+				 { name: "dev_ck", value: option.dev },
+				 { name: "hosp_code", value: option.hc }
                 ];
                 if (option.extParam) {
                     for (var pi = 0; pi < option.extParam.length; pi++) {

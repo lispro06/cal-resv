@@ -133,12 +133,15 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
         $(document).ready(function() {
 		 doct_ck=document.getElementById("doctdiv").checked;//원장 체크 여부 확인
 		 dev_ck=document.getElementById("devdiv").checked;//장비 체크 여부 확인
+		 hosp_code=document.getElementById("HOSP_CODE").value;//병원 선택
+		 
            var view="week";          
            var re="<?php echo $_SESSION['sunap'];?>";
             var DATA_FEED_URL = "./cal/datafeed.php";
             var op = {
                 doc: doct_ck,
                 dev: dev_ck,
+                hc: hosp_code,
                 view: view,
                 theme:3,
                 showday: new Date(),
@@ -366,6 +369,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
             $("#doctdiv").click(function(e){
 				op.doc=document.getElementById("doctdiv").checked;//원장 체크 여부 확인
 				op.dev=document.getElementById("devdiv").checked;//장비 체크 여부 확인
+				op.hc=document.getElementById("HOSP_CODE").value;//병원 선택
 				$("#gridcontainer").BcalSetOp(op);
                 $("#gridcontainer").reload();
             });
@@ -373,6 +377,15 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
             $("#devdiv").click(function(e){
 				op.doc=document.getElementById("doctdiv").checked;//원장 체크 여부 확인
 				op.dev=document.getElementById("devdiv").checked;//장비 체크 여부 확인
+				op.hc=document.getElementById("HOSP_CODE").value;//병원 선택
+				$("#gridcontainer").BcalSetOp(op);
+                $("#gridcontainer").reload();
+            });
+            // 병원
+            $("#HOSP_CODE").change(function(e){
+				op.doc=document.getElementById("doctdiv").checked;//원장 체크 여부 확인
+				op.dev=document.getElementById("devdiv").checked;//장비 체크 여부 확인
+				op.hc=document.getElementById("HOSP_CODE").value;//병원 선택
 				$("#gridcontainer").BcalSetOp(op);
                 $("#gridcontainer").reload();
             });
@@ -435,6 +448,11 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
             
             <div id="optiondiv" title="선택" class="fbutton">
                 <span><input type="checkbox" id="doctdiv" name="doctdiv" checked>원장<input type="checkbox" id="devdiv" name="devdiv" checked>장비</span>
+            </div>
+            <div id="hospdiv" title="병원선택" class="fbutton">
+                <span><select name="HOSP_CODE" id="HOSP_CODE" style="width:120px;">
+	    	    <option value=""></option>
+	    	    <option value="1234" <?php echo $code["1234"];?>>기본병원</option></select></span>
             </div>
             <div class="clear"></div>
             </div>
