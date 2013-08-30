@@ -18,13 +18,10 @@ class DBConnection{
     $db = new DBConnection();
     $db->getConnection($dbname,$dbpass);
 include_once("functions.php");
-    mysql_query("set session character_set_connection=utf8;");
-    mysql_query("set session character_set_results=utf8;");
-    mysql_query("set session character_set_client=utf8;");
-    $sql = "select `CUST_CNUM`, `CUST_NAME`, `CUST_IDEN`, `CUST_MEMO` from `toto_customer` where `CUST_NAME` LIKE '%" . $_GET["cust_name"]."%'";
+    $sql = "select `CUST_CNUM`, `CUST_NAME`, `CUST_IDEN`, `CUST_HAND`, `CUST_MEMO` from `toto_customer` where `CUST_NAME` LIKE '%" . $_GET["cust_name"]."%'";
     $handle = mysql_query($sql);
 	while($row = mysql_fetch_array($handle)){
-		echo "<a href='#' onclick='in_box(\"".$row[0]."\",\"".$row[1]."\",\"".$row[2]."\",\"".$row[3]."\");'>".$row[1]."</a> ".$row[2]."<br />";
+		echo "<a href='#' onclick='in_box(\"".$row[0]."\",\"".$row[1]."\",\"".$row[2]."\",\"".$row[3]."\",\"".$row[4]."\");'>".$row[1]."</a> ".$row[2]."<br />";
 	}
 ?>
 <html>
@@ -37,11 +34,13 @@ include_once("functions.php");
 	var cc=opener.document.getElementById("CUST_CNUM");
 	var cn=opener.document.getElementById("CUST_NAME");
 	var ci=opener.document.getElementById("CUST_IDEN");
+	var ch=opener.document.getElementById("CUST_TELE");
 	var cm=opener.document.getElementById("CUST_MEMO");
-	function in_box(cnum, name, ssn, memo){
+	function in_box(cnum, name, ssn, cp, memo){
 		cc.value = cnum;
 		cn.value = name;
 		ci.value = ssn;
+		ch.value = cp;
 		cm.value = memo;
 		self.close();
 	}
