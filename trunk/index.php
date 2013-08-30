@@ -135,7 +135,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
 		 dev_ck=document.getElementById("devdiv").checked;//장비 체크 여부 확인
 		 hosp_code=document.getElementById("HOSP_CODE").value;//병원 선택
 		 
-           var view="week";          
+           var view="day";          
            var re="<?php echo $_SESSION['sunap'];?>";
             var DATA_FEED_URL = "./cal/datafeed.php";
             var op = {
@@ -416,10 +416,10 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
             </div>
               <div class="btnseparator"></div>
 
-            <div id="showdaybtn" class="fbutton">
+            <div id="showdaybtn" class="fbutton fcurrent">
                 <div><span title='일' class="showdayview">일</span></div>
             </div>
-              <div  id="showweekbtn" class="fbutton fcurrent">
+              <div  id="showweekbtn" class="fbutton">
                 <div><span title='주' class="showweekview">주</span></div>
             </div>
               <div  id="showmonthbtn" class="fbutton">
