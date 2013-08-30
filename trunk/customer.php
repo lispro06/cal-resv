@@ -274,6 +274,76 @@ if($_GET["id"]){
                 var form = $("#fmEdit");             
                 error.appendTo(form).css(newpos);
             }
+			$("#CUST_HAND").focus(function () {
+			var regExp = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+			}).keydown(function(e) {
+				if( e.keyCode != '8' && e.keyCode != '46' ){
+					var input_text=$(this).val();
+					if( input_text.length == '3' || input_text.length == '8' ){
+						var add_hyphen=$(this).val()+'-';
+						$(this).val(add_hyphen);
+					}
+				}
+			}).focusout(function() {
+				var this_len=($(this).val()).length;
+				if( this_len <= '12' ){
+					//var hyphen_chg=/\d{3}-\d{3}-\d{4}$/g;
+					var str=$(this).val().replace(/[-]/gi,'');
+					//var string=str.replace(/(^01[0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/,"$1-$2-$3");
+					$(this).val(string);
+				}
+			});
+			$("#CUST_BITH").focus(function () {
+			var regExp = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+			}).keydown(function(e) {
+				if( e.keyCode != '8' && e.keyCode != '46' ){
+					var input_text=$(this).val();
+					if( input_text.length == '4' || input_text.length == '7' ){
+						var add_hyphen=$(this).val()+'-';
+						$(this).val(add_hyphen);
+					}
+				}
+			}).focusout(function() {
+				var this_len=($(this).val()).length;
+				if( this_len <= '12' ){
+					var string=str.replace(/(^01[0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/,"$1-$2-$3");
+					$(this).val(string);
+				}
+			});
+			$("#MARY_DATE").focus(function () {
+			var regExp = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+			}).keydown(function(e) {
+				if( e.keyCode != '8' && e.keyCode != '46' ){
+					var input_text=$(this).val();
+					if( input_text.length == '4' || input_text.length == '7' ){
+						var add_hyphen=$(this).val()+'-';
+						$(this).val(add_hyphen);
+					}
+				}
+			}).focusout(function() {
+				var this_len=($(this).val()).length;
+				if( this_len <= '12' ){
+					var string=str.replace(/(^01[0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/,"$1-$2-$3");
+					$(this).val(string);
+				}
+			});
+			$("#CUST_IDEN").focus(function () {
+			var regExp = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+			}).keydown(function(e) {
+				if( e.keyCode != '8' && e.keyCode != '46' ){
+					var input_text=$(this).val();
+					if( input_text.length == '6'){
+						var add_hyphen=$(this).val()+'-';
+						$(this).val(add_hyphen);
+					}
+				}
+			}).focusout(function() {
+				var this_len=($(this).val()).length;
+				if( this_len <= '13' ){
+					var string=str.replace(/(^01[0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/,"$1-$2-$3");
+					$(this).val(string);
+				}
+			});
         });
 		function cust_srch(){
 			var cust_name = document.getElementById("keyword");
@@ -422,19 +492,19 @@ if($_GET["id"]){
 		<b>&nbsp;고&nbsp;객&nbsp;검&nbsp;색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $event->CUST_CNUM;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
 		</span><br />
 		  <span><b>&nbsp;<u>고&nbsp;객&nbsp;성&nbsp;명</u>&nbsp;<input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $cust_name;?>"></input>&nbsp;&nbsp;
-		  <br />&nbsp;<u>주&nbsp;민&nbsp;번&nbsp;호</u></b>&nbsp;<input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $cust_iden;?>"></input>&nbsp;&nbsp; <input type="checkbox" name="IDEN_CHCK" id="IDEN_CHCK" value="Y" <?php echo $ic;?> />확인된 주민번호임</span><br />
-		  <span><b>&nbsp;<u>실&nbsp;제&nbsp;생&nbsp;일</u>&nbsp;<input class="required safe" name="CUST_BITH" id="CUST_BITH" size="10" value="<?php echo $cust_bith;?>"></input>&nbsp;[<input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="0" <?php echo $bf[0];?> />음 <input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="1" <?php echo $bf[1];?> />양]</input>&nbsp;
+		  <br />&nbsp;<u>주&nbsp;민&nbsp;번&nbsp;호</u></b>&nbsp;<input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $cust_iden;?>" style="ime-mode:disabled" maxlength="14"></input>&nbsp;&nbsp; <input type="checkbox" name="IDEN_CHCK" id="IDEN_CHCK" style="ime-mode:disabled" onKeyPress="NumObj(event,this);" value="Y" <?php echo $ic;?> />확인된 주민번호임</span><br />
+		  <span><b>&nbsp;<u>실&nbsp;제&nbsp;생&nbsp;일</u>&nbsp;<input class="required safe" name="CUST_BITH" id="CUST_BITH" size="10" value="<?php echo $cust_bith;?>" style="ime-mode:disabled" onKeyPress="NumObj(event,this);" maxlength="10"></input>&nbsp;[<input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="0" <?php echo $bf[0];?> />음 <input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="1" <?php echo $bf[1];?> />양]</input>&nbsp;
 		  <br />&nbsp;<u>성&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;별 </u>&nbsp; [<input type="radio" name="SEX_GUBN" id="SEX_GUBN" value="F" <?php echo $sg[0];?> />여성 <input type="radio" name="SEX_GUBN" id="SEX_GUBN" value="M" <?php echo $sg[1];?> />남성]</input></b></span>
-		  <br />&nbsp;전&nbsp;화&nbsp;번&nbsp;호 <input name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $cust_tele;?>"></input>
-		  <br />&nbsp;휴대폰번호 <input name="CUST_HAND" id="CUST_HAND" size="15" value="<?php echo $cust_hand;?>"></input>&nbsp;&nbsp; <input type="checkbox" name="SMS_CHCK" id="SMS_CHCK" value="Y" <?php echo $sc;?> /> SMS 수신함 Ex) 011-1234-5678
-		  <br />&nbsp;<u>우편물수령지</u>&nbsp; [<input type="radio" name="POST_GUBN" id="POST_GUBN" value="H" <?php echo $pg[0];?> />자택 <input type="radio" name="POST_GUBN" id="POST_GUBN" value="O" <?php echo $pg[1];?> />직장]</input></b>&nbsp;&nbsp; <input type="checkbox" name="ADDR_CHCK" id="ADDR_CHCK" value="Y" <?php echo $ac;?> /> 연락가능한 주소임&nbsp;&nbsp;  병원인접주소[<input type="radio" name="PROX_GUBN" id="PROX_GUBN" value="H" <?php echo $xg[0];?> />자택 <input type="radio" name="PROX_GUBN" id="PROX_GUBN" value="O" <?php echo $xg[1];?> />직장]</input> 연락불가능사유<select id="CAUS_GUBN" name="CAUS_GUBN"><option>&nbsp;&nbsp;&nbsp;&nbsp;</option></select></span>
+		  <br />&nbsp;전&nbsp;화&nbsp;번&nbsp;호 <input name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $cust_tele;?>" maxlength="13"></input>
+		  <br />&nbsp;휴대폰번호 <input name="CUST_HAND" id="CUST_HAND" size="15" value="<?php echo $cust_hand;?>"  style="ime-mode:disabled" onKeyPress="NumObj(event,this);" maxlength="13"></input>&nbsp;&nbsp; <input type="checkbox" name="SMS_CHCK" id="SMS_CHCK" value="Y" <?php echo $sc;?> /> SMS 수신함 Ex) 011-1234-5678
+		  <br />&nbsp;<u>우편물수령지</u>&nbsp; [<input type="radio" name="POST_GUBN" id="POST_GUBN" class="required safe" value="H" <?php echo $pg[0];?> />자택 <input type="radio" name="POST_GUBN" id="POST_GUBN" value="O" <?php echo $pg[1];?> />직장]</input></b>&nbsp;&nbsp; <input type="checkbox" name="ADDR_CHCK" id="ADDR_CHCK" value="Y" <?php echo $ac;?> /> 연락가능한 주소임&nbsp;&nbsp;  병원인접주소[<input type="radio" name="PROX_GUBN" id="PROX_GUBN" value="H" <?php echo $xg[0];?> />자택 <input type="radio" name="PROX_GUBN" id="PROX_GUBN" value="O" <?php echo $xg[1];?> />직장]</input> 연락불가능사유<select id="CAUS_GUBN" name="CAUS_GUBN"><option>&nbsp;&nbsp;&nbsp;&nbsp;</option></select></span>
 		  <br />&nbsp;<b>자&nbsp;택&nbsp;주&nbsp;소 <input name="HOME_POST" id="HOME_POST" size="15" value="<?php echo $home_post;?>" readonly></input>
 		  <a href="#" onclick="zip_open(0);">[우편번호]</a>  <input name="HOME_ADDR" id="HOME_ADDR" size="35" value="<?php echo $home_addr;?>"></input>
 		  <br />&nbsp;직&nbsp;장&nbsp;주&nbsp;소 <input name="OFFI_POST" id="OFFI_POST" size="15" value="<?php echo $offi_post;?>" readonly></input>
 		  <a href="#" onclick="zip_open(1);">[우편번호]</a>  <input name="OFFI_ADDR" id="OFFI_ADDR" size="35" value="<?php echo $offi_addr;?>"></input>
 		  <br />&nbsp;이&nbsp;&nbsp;메&nbsp;&nbsp;일&nbsp;&nbsp;<input name="CUST_MAIL" id="CUST_MAIL" size="25" value="<?php echo $cust_mail;?>"></input>
 		  &nbsp;&nbsp; <input type="checkbox" name="MAIL_CHCK" id="MAIL_CHCK" value="Y" <?php echo $mc;?> /> 이메일수신함<br />
-		  <b>&nbsp;결혼기념일&nbsp; <input class="required safe" name="MARY_DATE" id="MARY_DATE" size="10" value="<?php echo $mary_date;?>"></input>&nbsp;[<input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="0" <?php echo $mf[0];?> />미혼 <input type="radio" name="MARY_FLAG" id="MARY_FLAG" value="1" <?php echo $mf[1];?> />기혼]</input>&nbsp;
+		  <b>&nbsp;결혼기념일&nbsp; <input name="MARY_DATE" id="MARY_DATE" size="10" value="<?php echo $mary_date;?>" style="ime-mode:disabled" maxlength="10"></input>&nbsp;[<input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="0" <?php echo $mf[0];?> />미혼 <input type="radio" name="MARY_FLAG" id="MARY_FLAG" value="1" <?php echo $mf[1];?> />기혼]</input>&nbsp;
 		  <br />
 		  <table><tr><td>고객메모<br />(특이사항)</td><td><textarea id="CUST_MEMO" name="CUST_MEMO" style="width:480px;;height:30px;"><?php echo $cust_memo;?></textarea></td></tr></table>
 		  </div>
@@ -470,13 +540,13 @@ if($_GET["id"]){
           <label>
 		  <table border="1" width="550">
 			<tr>
-				<td width="100">진료/처치내역</td><td width="100">예약내역</td><td></td>
+				<td width="100">패밀리</td><td width="100">소개한고객</td><td>소개받은고객</td>
 			</tr>
 			<tr>
 				<td colspan="3">
 				<table>
 					<tr>
-						<td>내원병원</td><td>내원일자</td><td>진단명</td><td>처치명</td><td>처치원장</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>
+						<td>관계</td><td>고객명</td><td>주민번호</td><td>고객번호</td><td>패밀리고객번호</td>
 					</tr>
 <?php
 	if($event->CUST_CNUM){
@@ -484,11 +554,11 @@ if($_GET["id"]){
 		$c_hd = mysql_query($sql);
 		while($c_row = mysql_fetch_array($c_hd)){
 		     echo "<tr>\n";
-		     echo "<td>".$c_row[0]."</td><td>".$c_row[1]."</td><td>".$c_row[2]."</td><td>".$c_row[3]."</td><td>".$c_row[4]."</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>";
+		     echo "<td>".$c_row[0]."</td><td>".$c_row[1]."</td><td>".$c_row[2]."</td><td>".$c_row[3]."</td><td>".$c_row[4]."</td>";
 		     }
 		}else{
 ?>
-		<td><?php echo $_SESSION['sunap'];?></td><td><?php echo $aclRow[6];?></td><td>진단명</td><td>처치명</td><td>처치원장</td><td>미등록처치명</td><td>처치직원</td><td>부분</td>
+		<td><?php echo $_SESSION['sunap'];?></td><td><?php echo $aclRow[6];?></td><td>진단명</td><td>처치명</td><td>처치원장</td>
 					</tr>
 <?php
 }
@@ -538,5 +608,18 @@ if($_GET["id"]){
 			var url = "./zip_srch.php?ho=" + ho;
 			window.open(url,'','width=400, height=300, toolbar=no, menubar=no, location=no, directories=0, status=0,scrollbar=0,resize=0');
 		}
+		function NumObj(e,val){
+			var code = (window.event) ? event.keyCode : e.which; //IE : FF - Chrome both
+			if (code > 32 && code < 48) nAllow(e);
+			if (code > 57 && code < 65) nAllow(e);
+			if (code > 90 && code < 127) nAllow(e);
+		}
+		function nAllow(e){
+        if(navigator.appName!="Netscape"){ //for not returning keycode value
+            event.returnValue = false;  //IE ,  - Chrome both
+        }else{
+            e.preventDefault(); //FF ,  - Chrome both
+        }        
+    }
 	</script>
 </html>
