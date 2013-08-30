@@ -129,8 +129,10 @@ if($_GET["id"]){
             var DATA_FEED_URL = "./cal/datafeed.php";
             var arrT = [];
             var tt = "{0}:{1}";
-            for (var i = 0; i < 24; i++) {//combo box로 된 시간 선택 상자
-                arrT.push({ text: StrFormat(tt, [i >= 10 ? i : "0" + i, "00"]) }, { text: StrFormat(tt, [i >= 10 ? i : "0" + i, "30"]) });
+            for (var i = 6; i < 21; i++) {//combo box로 된 시간 선택 상자
+                arrT.push({ text: StrFormat(tt, [i >= 10 ? i : "0" + i, "00"]) }, { text: StrFormat(tt, [i >= 10 ? i : "0" + i, "10"]) });
+                arrT.push({ text: StrFormat(tt, [i >= 10 ? i : "0" + i, "20"]) }, { text: StrFormat(tt, [i >= 10 ? i : "0" + i, "30"]) });
+                arrT.push({ text: StrFormat(tt, [i >= 10 ? i : "0" + i, "40"]) }, { text: StrFormat(tt, [i >= 10 ? i : "0" + i, "50"]) });
             }
             $("#timezone").val(new Date().getTimezoneOffset()/60 * -1);
             $("#stparttime").dropdown({
@@ -393,7 +395,7 @@ if($_GET["id"]){
 	}
 ?>
 		<div style="border:1px solid #333333;padding:2px;">
-		<span><b>&nbsp;<u>고객구분</u> <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" onchange="srch_on();" <?php echo $cb["N"];?> />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" <?php echo $cb["O"];?> onchange="srch_on();" />구환&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $event->CUST_CNUM;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
+		<span><b>&nbsp;<u>고객구분</u> <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="N" <?php echo $cb["N"];?> />신환 <input type="radio" name="CUST_GUBN" id="CUST_GUBN" value="O" <?php echo $cb["O"];?> />구환&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 고객검색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $event->CUST_CNUM;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value=""></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt"></input>
 		</span><br />
 		  <span><b>&nbsp;<u>고객성명</u>&nbsp;&nbsp;<input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $event->CUST_NAME;?>"></input>&nbsp;&nbsp;&nbsp; <u>연&nbsp;락&nbsp;처</u> <input class="required safe" name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $event->CUST_TELE;?>"></input>&nbsp;&nbsp; 주&nbsp;민&nbsp;번&nbsp;호 <input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $cust_iden;?>" disabled></input></b></span><br />
 		  <table><tr><td>고객메모<br />(특이사항)</td><td><textarea id="CUST_MEMO" name="CUST_MEMO" disabled style="width:480px;;height:30px;"><?php echo $cust_memo;?></textarea></td></tr></table>
@@ -625,9 +627,9 @@ if($event->TELE_FLAG){
 			</table>
 <!--
             <span>                        장소:
-            </span>                    
-            <input MaxLength="200" id="Location" name="Location" style="width:95%;" type="text" value="<?php echo isset($event)?$event->Location:""; ?>" />                 
-          </label>                   
+            </span>                    -->
+            <input MaxLength="200" id="Location" name="Location" style="width:95%;display:none" type="text" value="<?php echo isset($event)?$event->Location:""; ?>" />                 
+<!--
            
 			<label>
             <span>                        Remark:
@@ -686,23 +688,31 @@ function code2asin($cd){
   
 			var kw = document.getElementById("keyword");
 			var sb = document.getElementById("sc_bt");
-			var cg = "<?php echo $event->CUST_GUBN;?>";//구환 신환 플래그로 검색창 [비]활성화
+			var cg = document.getElementById("CUST_GUBN");
 		function srch_on(){
-			if(cg=="N"){
+			cg = document.getElementById("CUST_GUBN");
+			alert(cg.value);
+			if(cg.value=="N"){
 				kw.removeAttribute('disabled');
 				sb.removeAttribute('disabled');
-				cg="O";
 			}else{
 				kw.setAttribute('disabled',true);
 				sb.setAttribute('disabled',true);
-				cg="N";
 			}
 		}
 			var cn = document.getElementById("CUST_NAME");
 			var ct = document.getElementById("CUST_TELE");
 			var sj = document.getElementById("Subject");
+			var lc = document.getElementById("Location");
+			var rk = document.getElementById("RMDY_KORA");
+			var rm = document.getElementById("RESV_MEMO");
+			var hn = document.getElementById("HOSP_CODE");
+			var hosp_name = hn.options[hn.selectedIndex].text;// 병원이름
+			
+			var li = document.getElementById("logged_ID");
 		function subj(){//달력에 나올 내용 반영
-			sj.value=cn.value+" "+ct.value;
+			sj.value=cn.value+" "+ct.value+"<br />("+hosp_name+"/"+li.value+")";
+			lc.value=rk.value+" ("+rm.value+")";
 		}
 			var cv = document.getElementById("colorvalue");
 			var asin = document.getElementById("ASIN_SEQN");
