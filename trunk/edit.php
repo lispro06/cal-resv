@@ -458,7 +458,7 @@ if($_GET["id"]){
 			<tr>
 			<td style="width:80px;">&nbsp;원&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;장</td>
 			<td>
-				<select name="RMDY_DOCT" id="RMDY_DOCT" style="width:120px;">
+				<select name="RMDY_DOCT" id="RMDY_DOCT" style="width:120px;" onchange="rd_ch();">
 	    	    <option value="">원장 선택</option>
 			<?php
 			
@@ -483,7 +483,7 @@ if($_GET["id"]){
 ?>
 			<td style="width:80px;">&nbsp;관리&nbsp;/&nbsp;장비</td>
 			<td>
-				<select name="ASIN_SEQN" id="ASIN_SEQN" style="width:120px;" onchange="as_color(this);">
+				<select name="ASIN_SEQN" id="ASIN_SEQN" style="width:120px;" onchange="as_color();">
 	    	    <option value="0"></option>
 	    	    <option value="1" <?php echo $as_arr[1];?>>관리</option>
 	    	    <option value="2" <?php echo $as_arr[2];?>>가예약</option>
@@ -705,8 +705,15 @@ function code2asin($cd){
 			sj.value=cn.value+" "+ct.value;
 		}
 			var cv = document.getElementById("colorvalue");
-		function as_color(obj){//관리/장비에 따른 색 지정
-			cv.value=obj.value;
+			var asin = document.getElementById("ASIN_SEQN");
+			var rd_sel = document.getElementById("RMDY_DOCT");
+		function as_color(){//관리/장비에 따른 색 지정, 원장 disable
+			cv.value=asin.value;
+			if(asin.value!="0"){
+				rd_sel.setAttribute('disabled',true);
+			}else{
+				rd_sel.removeAttribute('disabled');
+			}
 		}
 			var rdiv = document.getElementById("reserv");
 			var rcdiv = document.getElementById("rmdyclnc");
@@ -718,5 +725,14 @@ function code2asin($cd){
 			rdiv.style.display = "block";
 			rcdiv.style.display = "none";
 		}
+		function rd_ch(){//원장이 있으면 disable
+			if(rd_sel.value==""){
+				asin.removeAttribute('disabled');
+			}else{
+				asin.setAttribute('disabled',true);
+			}
+		}
+		rd_ch();
+		as_color();
 	</script>
 </html>
