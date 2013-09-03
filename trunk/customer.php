@@ -345,16 +345,6 @@ if($_GET["id"]){
 				}
 			});
         });
-		function cust_srch(){
-			var cust_name = document.getElementById("keyword");
-			var ln=cust_name.value.length;
-			var url="./cust_srch.php?cust_name="+cust_name.value;
-			if(parseInt(ln)>1){
-				window.open(url,'','width=200, height=200, toolbar=no, menubar=no, location=no, directories=0, status=0,scrollbar=0,resize=0');
-			}else{
-				alert("고객 이름을 2자 이상 입력해 주세요.");
-			}
-		}
 		
 <?php // 처치명 세팅하기
 	$cc_sql = "SELECT `CLNC_CODE` FROM `toto_ClinicCode` WHERE `CLNC_CODE` LIKE '%00' AND `USE__FLAG`=\"1\"";
@@ -492,9 +482,43 @@ if($_GET["id"]){
 		<b>&nbsp;고&nbsp;객&nbsp;검&nbsp;색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $event->CUST_CNUM;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
 		</span><br />
 		  <span><b>&nbsp;<u>고&nbsp;객&nbsp;성&nbsp;명</u>&nbsp;<input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $cust_name;?>"></input>&nbsp;&nbsp;
-		  <br />&nbsp;<u>주&nbsp;민&nbsp;번&nbsp;호</u></b>&nbsp;<input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $cust_iden;?>" style="ime-mode:disabled" maxlength="14"></input>&nbsp;&nbsp; <input type="checkbox" name="IDEN_CHCK" id="IDEN_CHCK" style="ime-mode:disabled" onKeyPress="NumObj(event,this);" value="Y" <?php echo $ic;?> />확인된 주민번호임</span><br />
-		  <span><b>&nbsp;<u>실&nbsp;제&nbsp;생&nbsp;일</u>&nbsp;<input class="required safe" name="CUST_BITH" id="CUST_BITH" size="10" value="<?php echo $cust_bith;?>" style="ime-mode:disabled" onKeyPress="NumObj(event,this);" maxlength="10"></input>&nbsp;[<input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="0" <?php echo $bf[0];?> />음 <input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="1" <?php echo $bf[1];?> />양]</input>&nbsp;
-		  <br />&nbsp;<u>성&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;별 </u>&nbsp; [<input type="radio" name="SEX_GUBN" id="SEX_GUBN" value="F" <?php echo $sg[0];?> />여성 <input type="radio" name="SEX_GUBN" id="SEX_GUBN" value="M" <?php echo $sg[1];?> />남성]</input></b></span>
+		  <br />&nbsp;<u>주&nbsp;민&nbsp;번&nbsp;호</u></b>&nbsp;<input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $cust_iden;?>" style="ime-mode:disabled" maxlength="14" onKeyPress="NumObj(event,this);"></input>&nbsp;&nbsp; <input type="checkbox" name="IDEN_CHCK" id="IDEN_CHCK" style="ime-mode:disabled" onKeyPress="NumObj(event,this);" value="Y" <?php echo $ic;?> />확인된 주민번호임</span><br />
+		  <span><b>&nbsp;<u>실&nbsp;제&nbsp;생&nbsp;일</u>&nbsp;<input class="required safe" name="CUST_BITH" id="CUST_BITH" size="10" value="<?php echo $cust_bith;?>" style="ime-mode:disabled" onKeyPress="NumObj(event,this);" maxlength="10"></input>&nbsp;[<input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="0" <?php echo $bf[0];?> />음 <input type="radio" name="BITH_FLAG" id="BITH_FLAG" value="1" <?php echo $bf[1];?> />양]</input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;담당원장
+				<select name="CHRG_DOCT" id="CHRG_DOCT" style="width:120px;">
+	    	    <option value="">원장 선택</option>
+			<?php
+			
+			$rmdy_sql="SELECT * FROM  `toto_doctor`";	
+    			$rmdy_hd = mysql_query($rmdy_sql);
+			//$row = mysql_fetch_array($rmdy_hd);//원장선택 추가 2013-09-03
+			//$tt=mysql_affected_rows();
+				while($row = mysql_fetch_array($rmdy_hd)){
+					   if($row[1]==$event->CHRG_DOCT){
+						echo "<option value='".$row[1]."' selected>".$row[2]."</option>";
+						}else{
+						echo "<option value='".$row[1]."'>".$row[2]."</option>";
+						}
+					   }
+			?>
+    			</select>
+		  <br />&nbsp;<u>성&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;별 </u>&nbsp; [<input type="radio" name="SEX_GUBN" id="SEX_GUBN" value="F" <?php echo $sg[0];?> />여성 <input type="radio" name="SEX_GUBN" id="SEX_GUBN" value="M" <?php echo $sg[1];?> />남성]</input></b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;담당처치직원
+				<select name="AEST_EMPL" id="AEST_EMPL" style="width:120px;">
+	    	    <option value="">직원 선택</option>
+			<?php
+			
+			$AEST_EMPL_sql="SELECT * FROM  `toto_empl`";	
+    		$AEST_EMPL_hd = mysql_query($AEST_EMPL_sql);
+			//$row = mysql_fetch_array($rmdy_hd);//직원선택 추가 2013-09-03
+			//$tt=mysql_affected_rows();
+				while($row = mysql_fetch_array($AEST_EMPL_hd)){
+					   if($row[1]==$event->AEST_EMPL){
+						echo "<option value='".$row[1]."' selected>".$row[2]."</option>";
+						}else{
+						echo "<option value='".$row[1]."'>".$row[2]."</option>";
+						}
+					   }
+			?>
+    			</select>
 		  <br />&nbsp;전&nbsp;화&nbsp;번&nbsp;호 <input name="CUST_TELE" id="CUST_TELE" size="15" value="<?php echo $cust_tele;?>" maxlength="13"></input>
 		  <br />&nbsp;휴대폰번호 <input name="CUST_HAND" id="CUST_HAND" size="15" value="<?php echo $cust_hand;?>"  style="ime-mode:disabled" onKeyPress="NumObj(event,this);" maxlength="13"></input>&nbsp;&nbsp; <input type="checkbox" name="SMS_CHCK" id="SMS_CHCK" value="Y" <?php echo $sc;?> /> SMS 수신함 Ex) 011-1234-5678
 		  <br />&nbsp;<u>우편물수령지</u>&nbsp; [<input type="radio" name="POST_GUBN" id="POST_GUBN" class="required safe" value="H" <?php echo $pg[0];?> />자택 <input type="radio" name="POST_GUBN" id="POST_GUBN" value="O" <?php echo $pg[1];?> />직장]</input></b>&nbsp;&nbsp; <input type="checkbox" name="ADDR_CHCK" id="ADDR_CHCK" value="Y" <?php echo $ac;?> /> 연락가능한 주소임&nbsp;&nbsp;  병원인접주소[<input type="radio" name="PROX_GUBN" id="PROX_GUBN" value="H" <?php echo $xg[0];?> />자택 <input type="radio" name="PROX_GUBN" id="PROX_GUBN" value="O" <?php echo $xg[1];?> />직장]</input> 연락불가능사유<select id="CAUS_GUBN" name="CAUS_GUBN"><option>&nbsp;&nbsp;&nbsp;&nbsp;</option></select></span>
@@ -524,10 +548,7 @@ if($_GET["id"]){
                   $earr = explode(" ", php2JsTime(mySql2PhpTime($event->EndTime)));
               }
 			  ?> 
-              <input MaxLength="10" class="required date" id="stpartdate" name="stpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$sarr[0]:""; ?><?php echo $sarr_G[0]; ?>" />                       
-              <input MaxLength="5" class="required time" id="stparttime" name="stparttime" style="width:40px;" type="text" value="<?php echo isset($event)?$sarr[1]:""; ?><?php echo $sarr_G[1]; ?>" />To                       
-              <input MaxLength="10" class="required date" id="etpartdate" name="etpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$earr[0]:""; ?><?php echo $earr_G[0]; ?>" />                       
-              <input MaxLength="50" class="required time" id="etparttime" name="etparttime" style="width:40px;" type="text" value="<?php echo isset($event)?$earr[1]:""; ?><?php echo $earr_G[1]; ?>" />                                            
+                                              
               <label class="checkp"> 
                 <input id="IsAllDayEvent" name="IsAllDayEvent" type="checkbox" value="1" <?php if(isset($event)&&$event->IsAllDayEvent!=0) {echo "checked";} ?>/>          하루 종일                      
               </label>
