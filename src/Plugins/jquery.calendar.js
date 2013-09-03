@@ -1378,7 +1378,7 @@
             var t1 = (sy1 - pt) / (42*3);
             var t2 = parseInt(t1);
             var t3 = t1 - t2;
-            var tt = 0;//분 결정
+            var tt = 0;//시작 분 결정
             switch(true){
             case (t3<0.2):
                 tt = 0;
@@ -1386,7 +1386,7 @@
             case (t3<0.4):
                 tt = 10;
                 break;
-            case (t3<0.5):
+            case (t3<0.52):
                 tt = 20;
                 break;
             case (t3<0.6):
@@ -1399,13 +1399,30 @@
                 tt = 50;
                 break;
             }
-                
             var t4 = (sy2 - pt) / (42*3);
             var t5 = parseInt(t4);
-            var t6 = tt >= 50 ? 0 : tt + 10;//50분을 경우 0분으로 설정
-            t3 = t6 >= 1 ? t2 : t2 + 1;
-            t6 = t6 + 10; // 20분 단위 예약으로 변경 2013-08
-            return { sh: t2, sm: tt, eh: t3, em: t6, h: sy2 - sy1 };
+            var t6 = t4 - t5;
+            switch(true){
+            case (t6<0.2):
+                t7 = 0;
+                break;
+            case (t6<0.4):
+                t7 = 10;
+                break;
+            case (t6<0.5):
+                t7 = 20;
+                break;
+            case (t6<0.6):
+                t7 = 30;
+                break;
+            case (t6<0.85):
+                t7 = 40;
+                break;
+            default:
+                t7 = 50;
+                break;
+            }
+            return { sh: t2, sm: tt, eh: t5, em: t7, h: sy2 - sy1 };
         }
         function pZero(n) {
             return n < 10 ? "0" + n : "" + n;
@@ -2192,7 +2209,7 @@
             var source = e.srcElement || e.target;
             realsedragevent();
             switch (type) {
-                case "dw1": 
+                case "dw1": // 새일정 드래그 이벤트
                     _dragdata = { type: 1, target: obj, sx: e.pageX, sy: e.pageY };
                     break;
                 case "dw2": 

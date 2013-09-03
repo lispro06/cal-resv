@@ -341,6 +341,11 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                 var url ="./cal/edit.php";
                 OpenModelWindow(url,{ width: 500, height: 400, caption: "새 예약 입력"});
             });
+            //Add a new cust
+            $("#new_cust").click(function(e) {
+               var url="./cal/customer.php";
+                OpenModelWindow(url,{ width: 740, height: 400, caption: "새 고객 입력"});
+            });
             //go to today
             $("#showtodaybtn").click(function(e) {
                 var p = $("#gridcontainer").gotoDate().BcalGetOp();
@@ -396,7 +401,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
     <div>
 
       <div id="calhead" style="padding-left:1px;padding-right:1px;">          
-            <div class="cHead"><div class="ftitle">예약관리</div>
+            <div class="cHead"><div class="ftitle">예약관리 <span id="new_cust" name="new_cust" style="cursor:pointer">[새고객]</span></div>
             <div id="logout" class="ptogtitle loaderror"><a href="<?php echo $_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING'];?>&login=out">로그아웃</a></div>
             <div id="loadingpannel" class="ptogtitle loadicon" style="display: none;">데이터 처리중...</div>
              <div id="errorpannel" class="ptogtitle loaderror" style="display: none;">문제가 발생했습니다.</div>
