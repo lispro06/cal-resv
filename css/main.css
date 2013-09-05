@@ -592,3 +592,21 @@ div.ViewgBlock>div.loading
 	opacity:0;
 	background-color:#000;
 }
+
+
+/* 2 division*/
+.Area0 { width:100%; }
+
+.Area1 {
+
+    float:left; 
+    width:15%;
+
+}
+
+.Area2 {
+
+    float:left; 
+    width:85%;
+
+}

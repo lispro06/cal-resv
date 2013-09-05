@@ -1142,6 +1142,7 @@
             if (option.url && option.url != "") {
                 option.isloading = true;
                 //clearcontainer();
+			    option.view=view;//default view에서 현재 view를 적용 2013-09-05
                 if (option.onBeforeRequestData && $.isFunction(option.onBeforeRequestData)) {
                     option.onBeforeRequestData(1);
                 }

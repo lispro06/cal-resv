@@ -17,6 +17,9 @@ class DBConnection{
 }
     $db = new DBConnection();
     $db->getConnection($dbname,$dbpass);
+    mysql_query("set session character_set_connection=utf8;");
+    mysql_query("set session character_set_results=utf8;");
+    mysql_query("set session character_set_client=utf8;");
 include_once("functions.php");
     $sql = "select `CUST_CNUM`, `CUST_NAME`, `CUST_IDEN`, `CUST_HAND`, `CUST_MEMO` from `toto_customer` where `CUST_NAME` LIKE '%" . $_GET["cust_name"]."%'";
     $handle = mysql_query($sql);
