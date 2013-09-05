@@ -36,6 +36,9 @@ include_once("./functions.php");
 // db 커넥션을 무조건 한다. 2013-08-05
     $db = new DBConnection();
     $db->getConnection($dbname,$dbpass);
+    mysql_query("set session character_set_connection=utf8;");
+    mysql_query("set session character_set_results=utf8;");
+    mysql_query("set session character_set_client=utf8;");
 function getCalendarByRange($id){
   try{    
     $sql = "select * from `jqcalendar` where `id` = " . $id;
