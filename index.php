@@ -400,46 +400,115 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
     </script>    
 </head>
 <body>
+<div>
+<table style="width:100%;">
+<tr align="right">
+<td style="width:20%;">로고
+</td>
+<td style="width:40%;">
+</td>
+<td style="width:40%;">웹예약관리 로그인 - Medical IT <?php echo $_SESSION['sunap']." [".$_SERVER['REMOTE_ADDR']."]";?>
+</td>
+</tr>
+</table>
+</div>
+
+<div id="blogMenu">
+<ul>
+<li><a href="#"><span id="new_cust" name="new_cust" style="cursor:pointer">새고객</span></a></li>
+<li><a href="#">일정</a>
+
+<ul>
+<li><a href="#">Sub Menu 1</a></li>
+<li><a href="#">Sub Menu 2</a></li>
+<li><a href="#">Sub Menu 3</a></li>
+</ul>
+
+</li>
+
+<li><a href="#">예약</a>
+
+<ul>
+<li><a href="#">예약</a></li>
+<li><a href="#">예약 Remind</a></li>
+<li style="height:10px; margin: 0;padding:0;"><a href="#">예약부도자 Popup</a></li>
+<li style="height:1px; margin: 0;padding:0;"><hr></li>
+<li><a href="#">수술일정</a></li>
+<li><a href="#">공유장비 일정</a></li>
+<li style="height:10px; margin: 0;padding:0;"><a href="#">기간별 일정</a></li>
+<li style="height:1px; margin: 0;padding:0;"><hr></li>
+<li><a href="#">개인별 예약표 출력</a></li>
+</ul>
+
+</li>
+
+<li><a href="#">의료</a>
+
+
+<ul>
+<li><a href="#">접수</a></li>
+<li><a href="#">진료</a></li>
+<li><a href="#">상담</a></li>
+<li><a href="#">처치1</a></li>
+<li><a href="#">처치2</a></li>
+<li style="height:10px; margin: 0;padding:0;"><a href="#">진료챠트</a></li>
+<li style="height:1px; margin: 0;padding:0;"><hr></li>
+<li><a href="#">상담결렬일지관리</a></li>
+</ul>
+
+
+</li>
+<li><a href="#">전화상담</a></li>
+<li><a href="#">도구</a></li>
+<li><a href="#">보기</a></li>
+<li><a href="#">도움말</a></li>
+<li><a href="#">통계</a></li>
+<li><a href="#">지출부</a></li>
+<li><a href="#">시스템</a></li>
+<li><a href="#">CRM</a></li>
+<li style="width:70%;"></li>
+</ul>
+</div>
     <div class="Area0">
 
 	<div class="Area1">
-<table border="1" style="height:300px;width:100%;">
+<table style="height:300px;width:100%;border-collapse:collapse;border-width: thin;border-spacing: 0px;border-style: none;border-color: black;">
 	<tr>
-		<td style="height:10px;">고객검색<input type="text" size="7"></input><input type="button" value="go"></input></td>
+		<td style="height:10px;border: 1px solid black;" colspan="6">고객검색<input type="text" size="10"></input><input type="button" value="go"></input></td>
 	</tr>
 	<tr>
-		<td valign="top">진료/상담/처치1/처치2/전체</td>
+		<td valign="top" style="height:10px;border: 1px solid black;" colspan="6">진료/상담/처치1/처치2/전체</td>
 	</tr>
 	<tr>
-	<td valign="top">진/상/1/2/고객명/주민번호</td>
+	<td valign="top" style="height:10px;border: 1px solid black;">진</td><td valign="top" style="border: 1px solid black;">상</td><td valign="top" style="border: 1px solid black;">1</td><td valign="top" style="height:10px;border: 1px solid black;">2</td><td valign="top" style="border: 1px solid black;">고객명</td><td valign="top" style="border: 1px solid black;">주민번호</td>
+	</tr>
+	<tr>
+	<td style="height:250px;"></td>
 	</tr>
 </table>
-<table style="height:350px;width:100%;" border="1">
+<table style="width:100%;border-collapse:collapse;border-width: thin;border-spacing: 0px;border-style: none;border-color: black;">
 	<tr>
-		<td valign="top">고객/예약/접수자</td>
+		<td valign="top" colspan="4" style="border: 1px solid black;">고객/예약/접수자</td>
 	</tr>
 	<tr>
-		<td style="height:10px;">고객검색<input type="text" size="7"></input><input type="button" value="go"></input></td>
+		<td style="height:10px;border: 1px solid black;" colspan="4">고객검색<input type="text" size="10"></input><input type="button" value="go"></input></td>
 	</tr>
 	<tr>
-		<td>
+		<td valign="top" style="height:10px;border: 1px solid black;">진</td><td style="height:10px;border: 1px solid black;">차</td><td style="height:10px;border: 1px solid black;">고객명</td><td style="height:10px;border: 1px solid black;">주민번호</td>
+	</tr>
+	
 <?php
     $sql = "select `CUST_CNUM`, `CUST_NAME`, `CUST_IDEN`, `CUST_HAND`, `CUST_MEMO` from `toto_customer` limit 0,30";
     $handle = mysql_query($sql);
 	while($row = mysql_fetch_array($handle)){
-		echo "".$row[1]." ".$row[2]."<br />";
+		echo "<tr><td style=\"border: 1px solid black;\"></td><td style=\"border: 1px solid black;\"></td><td style=\"border: 1px solid black;\">".$row[1]."</td><td style=\"border: 1px solid black;\">".substr($row[2],0,8)."</td></tr>";
 	}
-?>		
-		</td>
-	</tr>
-	<tr>
-		<td valign="top">진/차/고객명/주민번호</td>
-	</tr>
+?>
 </table>
 	</div>
 	<div class="Area2">
       <div id="calhead" style="padding-left:1px;padding-right:1px;">          
-            <div class="cHead"><div class="ftitle">예약관리 <span id="new_cust" name="new_cust" style="cursor:pointer">[새고객]</span></div>
+            <div class="cHead"><div class="ftitle">예약관리</div>
             <div id="logout" class="ptogtitle loaderror"><a href="<?php echo $_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING'];?>&login=out">로그아웃</a></div>
             <div id="loadingpannel" class="ptogtitle loadicon" style="display: none;">데이터 처리중...</div>
              <div id="errorpannel" class="ptogtitle loaderror" style="display: none;">문제가 발생했습니다.</div>
