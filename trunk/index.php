@@ -130,12 +130,12 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
     <script type="text/javascript">
 	var doct_ck;
 	var dev_ck;
+    var view="day";
         $(document).ready(function() {
 		 doct_ck=document.getElementById("doctdiv").checked;//원장 체크 여부 확인
 		 dev_ck=document.getElementById("devdiv").checked;//장비 체크 여부 확인
 		 hosp_code=document.getElementById("HOSP_CODE").value;//병원 선택
 		 
-           var view="day";          
            var re="<?php echo $_SESSION['sunap'];?>";
             var DATA_FEED_URL = "./cal/datafeed.php";
             var op = {
@@ -311,6 +311,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                 //document.location.href="#week";
                 $("#caltoolbar div.fcurrent").each(function() {
                     $(this).removeClass("fcurrent");
+					view="week";
                 })
                 $(this).addClass("fcurrent");
                 var p = $("#gridcontainer").swtichView("week").BcalGetOp();
@@ -324,6 +325,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
                 //document.location.href="#month";
                 $("#caltoolbar div.fcurrent").each(function() {
                     $(this).removeClass("fcurrent");
+					view="month";
                 })
                 $(this).addClass("fcurrent");
                 var p = $("#gridcontainer").swtichView("month").BcalGetOp();
@@ -398,8 +400,44 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
     </script>    
 </head>
 <body>
-    <div>
+    <div class="Area0">
 
+	<div class="Area1">
+<table border="1" style="height:300px;width:100%;">
+	<tr>
+		<td style="height:10px;">고객검색<input type="text" size="7"></input><input type="button" value="go"></input></td>
+	</tr>
+	<tr>
+		<td valign="top">진료/상담/처치1/처치2/전체</td>
+	</tr>
+	<tr>
+	<td valign="top">진/상/1/2/고객명/주민번호</td>
+	</tr>
+</table>
+<table style="height:350px;width:100%;" border="1">
+	<tr>
+		<td valign="top">고객/예약/접수자</td>
+	</tr>
+	<tr>
+		<td style="height:10px;">고객검색<input type="text" size="7"></input><input type="button" value="go"></input></td>
+	</tr>
+	<tr>
+		<td>
+<?php
+    $sql = "select `CUST_CNUM`, `CUST_NAME`, `CUST_IDEN`, `CUST_HAND`, `CUST_MEMO` from `toto_customer` limit 0,30";
+    $handle = mysql_query($sql);
+	while($row = mysql_fetch_array($handle)){
+		echo "".$row[1]." ".$row[2]."<br />";
+	}
+?>		
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">진/차/고객명/주민번호</td>
+	</tr>
+</table>
+	</div>
+	<div class="Area2">
       <div id="calhead" style="padding-left:1px;padding-right:1px;">          
             <div class="cHead"><div class="ftitle">예약관리 <span id="new_cust" name="new_cust" style="cursor:pointer">[새고객]</span></div>
             <div id="logout" class="ptogtitle loaderror"><a href="<?php echo $_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING'];?>&login=out">로그아웃</a></div>
@@ -480,7 +518,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
         </div>   
         </div>
      
-  </div>
-    
+  </div><!--Area2-->
+  </div>    
 </body>
 </html>
