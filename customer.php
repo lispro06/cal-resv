@@ -54,8 +54,22 @@ if($_GET["id"]){
 	$cb[$event->CUST_GUBN]="checked";//고객 구분 배열 2013-08-05
 	$reged_date=substr($event->REGI_DATE,0,10);
 	$regi_empl=$event->REGI_EMPL;
+    
+}else{//2013-08-05 세부 일정 클릭 시 내용 수신
+	$reged_date=date("Y-m-d",time());
+	$cb["N"]="checked";//새 일정일 경우 고객은 신환으로 설정
+	$title_G = $_GET["title"];
+	$sarr_G = explode(" ", $_GET["start"]);
+	$earr_G = explode(" ", $_GET["end"]);
+	$regi_empl=$_SESSION["sunap"];
+}
 	if($event->CUST_CNUM){
-	$c_sql = "select * from `toto_customer` where `CUST_CNUM` = '".$event->CUST_CNUM."';";
+		$cust_id=$event->CUST_CNUM;
+	}else if($_GET["cust_id"]){
+		$cust_id=$_GET["cust_id"];
+	}
+	if($cust_id){
+	$c_sql = "select * from `toto_customer` where `CUST_CNUM` = '".$cust_id."';";
     	$c_handle = mysql_query($c_sql);
 	$cu_row = mysql_fetch_array($c_handle);
 	$cust_name=$cu_row[2];
@@ -108,15 +122,6 @@ if($_GET["id"]){
 			$mc="checked";
 		}
 	}
-    
-}else{//2013-08-05 세부 일정 클릭 시 내용 수신
-	$reged_date=date("Y-m-d",time());
-	$cb["N"]="checked";//새 일정일 경우 고객은 신환으로 설정
-	$title_G = $_GET["title"];
-	$sarr_G = explode(" ", $_GET["start"]);
-	$earr_G = explode(" ", $_GET["end"]);
-	$regi_empl=$_SESSION["sunap"];
-}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -209,7 +214,7 @@ if($_GET["id"]){
                 $("#etparttime").val("00:00").hide();
             }
             $("#Savebtn").click(function() { $("#fmEdit").submit(); });
-            $("#Closebtn").click(function() { CloseModelWindow(); });
+            $("#Closebtn").click(function() { self.close(); CloseModelWindow(); });
             $("#Deletebtn").click(function() {
                  if (confirm("삭제하시겠습니까?")) {  
                     var param = [{ "name": "calendarId", value: 8}];                
@@ -242,10 +247,11 @@ if($_GET["id"]){
                 },
                 dataType: "json",
                 success: function(data) {
-                    //alert();
-                    //if (data.IsSuccess=1) {
+                    alert(data.Msg);
+                    if (data.IsSuccess=1) {
+						self.close();//새창에서 이루어질 경우
                         CloseModelWindow(null,true);  
-                    //}
+                    }
                 }
             };
             $.validator.addMethod("date", function(value, element) {                             
@@ -482,7 +488,7 @@ if($_GET["id"]){
       <div class="infocontainer">            
         <form action="./datafeed.php?method=customer&re=<?php echo $_SESSION['sunap'];?>" class="fform" id="fmEdit" method="post">
 		<div style="border:1px solid #333333;padding:2px;">
-		<b>&nbsp;고&nbsp;객&nbsp;검&nbsp;색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $event->CUST_CNUM;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
+		<b>&nbsp;고&nbsp;객&nbsp;검&nbsp;색 <input type="text" size="10" name="CUST_CNUM" id="CUST_CNUM" value="<?php echo $cust_id;?>" style="display:none;"></input><input type="text" size="10" id="keyword" name="keyword" value="" disabled></input><input type="button" onclick="cust_srch();" value="검색" id="sc_bt" name="sc_bt" disabled></input>
 		</span><br />
 		  <span><b>&nbsp;<u>고&nbsp;객&nbsp;성&nbsp;명</u>&nbsp;<input class="required safe" name="CUST_NAME" id="CUST_NAME" size="7" value="<?php echo $cust_name;?>"></input>&nbsp;&nbsp;
 		  <br />&nbsp;<u>주&nbsp;민&nbsp;번&nbsp;호</u></b>&nbsp;<input name="CUST_IDEN" id="CUST_IDEN" size="15" value="<?php echo $cust_iden;?>" style="ime-mode:disabled" maxlength="14" onKeyPress="NumObj(event,this);"></input>&nbsp;&nbsp; <input type="checkbox" name="IDEN_CHCK" id="IDEN_CHCK" style="ime-mode:disabled" onKeyPress="NumObj(event,this);" value="Y" <?php echo $ic;?> />확인된 주민번호임</span><br />
@@ -573,7 +579,7 @@ if($_GET["id"]){
 						<td>관계</td><td>고객명</td><td>주민번호</td><td>고객번호</td><td>패밀리고객번호</td>
 					</tr>
 <?php
-	if($event->CUST_CNUM){
+	if($cust_id){
 		$sql = "SELECT `HOSP_CODE`, `RESV_YYMD`, `RMDY_CODE`, `CLNC_CODE`, `RMDY_DOCT` FROM `jqcalendar` ORDER BY `StartTime` DESC LIMIT 0, 5";
 		$c_hd = mysql_query($sql);
 		while($c_row = mysql_fetch_array($c_hd)){
