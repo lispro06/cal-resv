@@ -396,7 +396,21 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
 				$("#gridcontainer").BcalSetOp(op);
                 $("#gridcontainer").reload();
             });
-        });
+        });	
+		function cust_srch(){
+			var cust_name = document.getElementById("keyword");
+			var ln=cust_name.value.length;
+			var url="./cal/cust_srch.php?cust_name="+cust_name.value;
+			if(parseInt(ln)>1){
+				window.open(url,'','width=200, height=200, toolbar=no, menubar=no, location=no, directories=0, status=0,scrollbar=0,resize=0');
+			}else{
+				alert("고객 이름을 2자 이상 입력해 주세요.");
+			}
+		}
+		function test1(cust_id) {
+			url = "./cal/customer.php?cust_id="+cust_id;
+			window.open(url,'','width=600,height=500')
+		}
     </script>    
 </head>
 <body>
@@ -491,7 +505,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
 		<td valign="top" colspan="4" style="border: 1px solid black;">고객/예약/접수자</td>
 	</tr>
 	<tr>
-		<td style="height:10px;border: 1px solid black;" colspan="4">고객검색<input type="text" size="10"></input><input type="button" value="go"></input></td>
+		<td style="height:10px;border: 1px solid black;" colspan="4">고객검색<input type="text" size="10" id="keyword" name="keyword"></input><input type="button" value="go" onclick="cust_srch();" id="sc_bt" name="sc_bt"></input></td>
 	</tr>
 	<tr>
 		<td valign="top" style="height:10px;border: 1px solid black;">진</td><td style="height:10px;border: 1px solid black;">차</td><td style="height:10px;border: 1px solid black;">고객명</td><td style="height:10px;border: 1px solid black;">주민번호</td>
@@ -501,7 +515,7 @@ if($aclRow[8]!="Y"){//권한이 없으면 로그인 화면
     $sql = "select `CUST_CNUM`, `CUST_NAME`, `CUST_IDEN`, `CUST_HAND`, `CUST_MEMO` from `toto_customer` limit 0,30";
     $handle = mysql_query($sql);
 	while($row = mysql_fetch_array($handle)){
-		echo "<tr><td style=\"border: 1px solid black;\"></td><td style=\"border: 1px solid black;\"></td><td style=\"border: 1px solid black;\">".$row[1]."</td><td style=\"border: 1px solid black;\">".substr($row[2],0,8)."</td></tr>";
+		echo "<tr><td style=\"border: 1px solid black;\"></td><td style=\"border: 1px solid black;\"></td><td style=\"border: 1px solid black;\"><a href=\"#\" onclick=\"test1(".$row[0].");\">".$row[1]."</a></td><td style=\"border: 1px solid black;\">".substr($row[2],0,8)."</td></tr>";
 	}
 ?>
 </table>
